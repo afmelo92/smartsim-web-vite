@@ -3,11 +3,11 @@ export default {
     background: '#1a1a1a',
     font: '#eee',
     primary: {
-      lighter: '#D3DDBC',
-      light: '#ADD588',
-      main: '#70D54B',
-      dark: '#33B33C',
-      darker: '#208D4D',
+      lighter: '#A0C593',
+      light: '#59B755',
+      main: '#56AB2F',
+      dark: '#379E26',
+      darker: '#107334',
     },
     gray: {
       900: '#0D0D0D',
