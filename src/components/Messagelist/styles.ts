@@ -1,84 +1,98 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Wrapper = styled.div`
-  /* border: 1px solid orange; */
-  padding: 16px;
   grid-area: list;
+  height: 100%;
+  background: ${({ theme }) => theme.colors.gray[500]};
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 4px;
+  gap: 8px;
 
   @media screen and (min-width: 768px) and (max-width: 1023px) {
-    grid-area: list;
+    padding: 8px;
   }
 
   @media screen and (max-width: 767px) {
-    grid-area: list;
+    padding: 8px;
   }
-`;
-
-export const Container = styled.div`
-  /* border: 1px solid red; */
-  width: 100%;
-  height: 100%;
-  border-radius: 4px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 16px 32px;
-  gap: 64px;
-  background: ${({ theme }) => theme.colors.gray[500]};
 `;
 
 export const MessagesHeader = styled.div`
-  /* border: 1px solid red; */
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
+  ${({ theme }) => css`
+    width: 100%;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
-  h2 {
-    border-bottom: 4px solid ${({ theme }) => theme.colors.primary.main};
-  }
-
-  button {
-    border-radius: 4px;
-    padding: 12px 8px;
-    cursor: pointer;
-    border: none;
-    background: ${({ theme }) => theme.colors.primary.main};
-    color: ${({ theme }) => theme.colors.font};
-    font-weight: bold;
-    font-size: 12px;
-    transition: ease 0.4s;
-
-    :hover {
-      background: ${({ theme }) => theme.colors.primary.dark};
+    h2 {
+      border-bottom: 4px solid ${theme.colors.primary.main};
+      min-width: max-content;
     }
-  }
+
+    #refresh {
+      max-width: max-content;
+    }
+
+    @media screen and (max-width: 767px) {
+      h2 {
+        font-size: 1.2rem;
+      }
+    }
+  `}
 `;
 
 export const MessagesContainer = styled.div`
-  /* border: 1px solid red; */
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  width: 100%;
 `;
 
 export const MessageBox = styled.div`
-  /* border: 1px solid yellow; */
-  display: grid;
-  grid-template-areas: 'info data';
-  grid-template-columns: 100px auto;
-  font-size: 14px;
-  padding: 8px;
-  background: ${({ theme }) => theme.colors.gray[400]};
-  border-radius: 4px;
+  ${({ theme }) => css`
+    width: 100%;
+    min-height: 100px;
+    background: ${theme.colors.gray[400]};
+    padding: 8px;
+    border-radius: 4px;
+    display: grid;
+    grid-template-areas: 'header data';
+    grid-template-rows: 1fr;
+    grid-template-columns: max-content auto;
+    grid-gap: 8px;
 
-  #message-info {
-    grid-area: info;
-    color: ${({ theme }) => theme.colors.primary.main};
-    font-weight: bold;
-  }
+    @media screen and (max-width: 767px) {
+      padding: 4px;
+    }
+  `}
+`;
 
-  #message-data {
-    grid-area: data;
+export const MessageHeader = styled.div`
+  ${({ theme }) => css`
+    grid-area: header;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.8rem;
+    color: ${theme.colors.primary.light};
+
+    @media screen and (max-width: 767px) {
+      padding: 4px;
+    }
+  `}
+`;
+
+export const MessageData = styled.div`
+  grid-area: data;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.8rem;
+
+  @media screen and (max-width: 767px) {
+    padding: 4px;
   }
 `;

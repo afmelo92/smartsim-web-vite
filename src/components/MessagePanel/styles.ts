@@ -1,96 +1,85 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Wrapper = styled.div`
-  /* border: 1px solid blue; */
-  grid-area: panel;
-  padding: 16px;
-
-  @media screen and (min-width: 768px) and (max-width: 1023px) {
+  ${({ theme }) => css`
     grid-area: panel;
-  }
+    height: 100%;
+    background: ${theme.colors.gray[500]};
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    border-radius: 4px;
 
-  @media screen and (max-width: 767px) {
-    grid-area: panel;
-  }
+    @media screen and (min-width: 768px) and (max-width: 1023px) {
+      padding: 8px;
+    }
+
+    @media screen and (max-width: 767px) {
+      padding: 8px;
+    }
+  `}
 `;
 
 export const Container = styled.div`
-  /* border: 1px solid red; */
-  width: 100%;
-  height: 100%;
-  border-radius: 4px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  /* justify-content: center; */
-  padding: 16px 32px;
-  gap: 64px;
-  background: ${({ theme }) => theme.colors.gray[500]};
-
-  #send-form {
-    /* border: 1px solid yellow; */
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-
-    input {
-      border-radius: 4px;
-      padding: 12px 8px;
-      border: none;
-    }
-
-    textarea {
-      min-height: 250px;
-      max-height: 500px;
-      border-radius: 4px;
-      padding: 12px 8px;
-      border: none;
-    }
-
-    button {
-      border-radius: 4px;
-      padding: 16px 8px;
-      cursor: pointer;
-      border: none;
-      background: ${({ theme }) => theme.colors.primary.main};
-      color: ${({ theme }) => theme.colors.font};
-      font-weight: bold;
-      font-size: 16px;
-      transition: ease 0.4s;
-
-      :hover {
-        background: ${({ theme }) => theme.colors.primary.dark};
-      }
-    }
-  }
+  gap: 8px;
 `;
 
 export const PanelHeader = styled.div`
-  /* border: 1px solid red; */
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
+  ${({ theme }) => css`
+    width: 100%;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
-  h2 {
-    border-bottom: 4px solid ${({ theme }) => theme.colors.primary.main};
-  }
-
-  button {
-    border-radius: 4px;
-    padding: 12px 8px;
-    cursor: pointer;
-    border: none;
-    background: ${({ theme }) => theme.colors.primary.main};
-    color: ${({ theme }) => theme.colors.font};
-    font-weight: bold;
-    font-size: 12px;
-    transition: ease 0.4s;
-
-    :hover {
-      background: ${({ theme }) => theme.colors.primary.dark};
+    h2 {
+      border-bottom: 4px solid ${theme.colors.primary.main};
+      min-width: max-content;
     }
-  }
+
+    #command {
+      max-width: max-content;
+    }
+
+    @media screen and (max-width: 767px) {
+      h2 {
+        font-size: 1.2rem;
+      }
+    }
+  `}
+`;
+
+export const Form = styled.div`
+  ${({ theme }) => css`
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.9rem;
+      color: ${theme.colors.primary.light};
+    }
+
+    textarea {
+      min-height: 150px;
+      resize: none;
+      padding: 8px 16px;
+      font-size: 1rem;
+      border-radius: 4px;
+    }
+
+    @media screen and (max-width: 767px) {
+      h2 {
+        font-size: 1.2rem;
+      }
+    }
+  `}
 `;
 
 export const CommandsSection = styled.section`
@@ -106,28 +95,38 @@ export const CommandsSection = styled.section`
 `;
 
 export const CommandsContainer = styled.div`
-  /* border: 1px solid red; */
-  width: 100%;
   display: grid;
-  grid-template-areas:
-    'command command command'
-    'command command command';
-
+  grid-template-areas: 'command command command';
+  grid-template-columns: 1fr 1fr 1fr;
   grid-gap: 4px;
 
-  button {
-    border-radius: 4px;
-    padding: 8px;
-    cursor: pointer;
-    border: none;
-    background: ${({ theme }) => theme.colors.primary.main};
-    color: ${({ theme }) => theme.colors.font};
-    font-weight: bold;
-    font-size: 12px;
-    transition: ease 0.4s;
+  #command {
+    font-size: 0.8rem;
+    button {
+      padding: 8px;
+    }
 
-    :hover {
-      background: ${({ theme }) => theme.colors.primary.dark};
+    svg {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      left: 16px;
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    grid-template-areas: 'command command';
+    grid-template-columns: 1fr 1fr;
+
+    #command {
+      button {
+        padding: 8px 4px;
+      }
+
+      svg {
+        width: 0;
+        height: 0;
+        display: none;
+      }
     }
   }
 `;
