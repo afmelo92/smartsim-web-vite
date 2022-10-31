@@ -1,7 +1,6 @@
 import React from 'react';
-import Messagelist from '../Messagelist';
-import MessagePanel from '../MessagePanel';
-import SVGWrapper from '../SVGWrapper';
+import { Outlet } from 'react-router-dom';
+import SVGWrapper from '@/components/SVGWrapper';
 
 import * as S from './styles';
 
@@ -16,24 +15,40 @@ const menu = [
     title: 'Admin',
     icon: 'admin',
     url: '/admin',
+    active: true,
+    admin: true,
   },
   {
     id: 2,
-    title: 'Loja',
-    icon: 'cart',
-    url: '/shop',
+    title: 'Home',
+    icon: 'home',
+    url: '/home',
+    active: true,
+    admin: false,
   },
   {
     id: 3,
-    title: 'Mensagens',
-    icon: 'inbox',
-    url: '/messages',
+    title: 'Loja',
+    icon: 'cart',
+    url: '/shop',
+    active: true,
+    admin: false,
   },
   {
     id: 4,
+    title: 'Mensagens',
+    icon: 'inbox',
+    url: '/messages',
+    active: false,
+    admin: false,
+  },
+  {
+    id: 5,
     title: 'Comandos',
     icon: 'command',
     url: '/commands',
+    active: false,
+    admin: false,
   },
 ];
 
@@ -55,12 +70,15 @@ const AppShell: React.FC = () => {
       </S.Header>
       <S.Sidebar>
         <S.SidebarNav>
-          {menu.map((item) => (
-            <S.NavItem key={item.id} title={item.title}>
-              <SVGWrapper iconName={item.icon} wrapperStyle='right-icon' />
-              <p>{item.title}</p>
-            </S.NavItem>
-          ))}
+          {menu.map(
+            (item) =>
+              item.active && (
+                <S.NavItem key={item.id} title={item.title} to={`${item.url}`}>
+                  <SVGWrapper iconName={item.icon} wrapperStyle='right-icon' />
+                  <p>{item.title}</p>
+                </S.NavItem>
+              )
+          )}
         </S.SidebarNav>
         <S.SidebarFooter>
           <SVGWrapper iconName='predator' wrapperStyle='predator' />
@@ -68,8 +86,7 @@ const AppShell: React.FC = () => {
         </S.SidebarFooter>
       </S.Sidebar>
       <S.Main>
-        <MessagePanel />
-        <Messagelist />
+        <Outlet />
       </S.Main>
     </S.Wrapper>
   );

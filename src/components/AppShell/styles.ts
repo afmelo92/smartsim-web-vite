@@ -1,3 +1,4 @@
+import { NavLink } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 export const Wrapper = styled.div`
@@ -73,18 +74,6 @@ export const Avatar = styled.div`
   }
 `;
 
-// export const Sidebar = styled.div`
-//   grid-area: sidebar;
-//   display: flex;
-//   flex-direction: column;
-//   justify-content: space-between;
-//   max-height: 100vh;
-
-//   #nav-header {
-//     padding: 16px 4px;
-//   }
-// `;
-
 export const Sidebar = styled.div`
   grid-area: sidebar;
   position: relative;
@@ -95,8 +84,10 @@ export const SidebarNav = styled.div`
   height: 100%;
 `;
 
-export const NavItem = styled.div`
+export const NavItem = styled(NavLink)`
   ${({ theme }) => css`
+    text-decoration: none;
+    color: ${theme.colors.font};
     width: 100%;
     height: 48px;
     cursor: pointer;
@@ -118,6 +109,14 @@ export const NavItem = styled.div`
       stroke: ${theme.colors.font};
     }
 
+    &.active {
+      color: ${theme.colors.primary.main};
+
+      svg {
+        stroke: ${theme.colors.primary.main};
+      }
+    }
+
     @media screen and (min-width: 768px) and (max-width: 1023px) {
       align-items: center;
       justify-content: center;
@@ -132,37 +131,6 @@ export const NavItem = styled.div`
     }
   `}
 `;
-
-// export const NavItem = styled.div`
-//   ${({ theme }) => css`
-//     padding: 16px;
-//     cursor: pointer;
-//     font-size: 14px;
-//     transition: 0.2s ease;
-//     display: flex;
-//     gap: 8px;
-
-//     svg {
-//       width: 16px;
-//       height: 16px;
-//       fill: none;
-//       stroke: ${theme.colors.font};
-//     }
-
-//     :hover {
-//       border-left: 4px solid ${theme.colors.primary.main};
-//       background: ${theme.colors.gray[900]};
-//     }
-
-//     @media screen and (min-width: 768px) and (max-width: 1023px) {
-//       align-items: center;
-//       justify-content: center;
-//       p {
-//         display: none;
-//       }
-//     }
-//   `}
-// `;
 
 export const SidebarFooter = styled.div`
   width: 100%;
@@ -193,90 +161,10 @@ export const SidebarFooter = styled.div`
   }
 `;
 
-// export const Footer = styled.div`
-//   border-top: 1px solid ${({ theme }) => theme.colors.font};
-//   padding: 16px 4px;
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   gap: 4px;
-
-//   svg {
-//     width: 16px;
-//     height: 16px;
-//   }
-
-//   strong {
-//     font-size: 12px;
-//   }
-
-//   @media screen and (min-width: 768px) and (max-width: 1023px) {
-//     strong {
-//       display: none;
-//     }
-//   }
-
-//   @media screen and (max-width: 767px) {
-//     strong {
-//       display: none;
-//     }
-//   }
-// `;
-
 export const Main = styled.div`
   grid-area: main;
-
-  display: grid;
-  grid-template-areas: 'panel list';
-  grid-template-rows: auto;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 16px;
-  padding: 16px;
+  padding: 8px;
   overflow-y: auto;
   overflow-x: hidden;
   background: ${({ theme }) => theme.colors.gray[900]};
-
-  @media screen and (min-width: 768px) and (max-width: 1023px) {
-    grid-template-areas:
-      'panel'
-      'list';
-    grid-template-columns: 1fr;
-  }
-
-  @media screen and (max-width: 767px) {
-    grid-template-areas:
-      'panel'
-      'list';
-    grid-template-columns: 1fr;
-    padding: 8px;
-  }
 `;
-
-// export const Main = styled.main`
-//   grid-area: main;
-//   display: grid;
-//   grid-template-areas: 'panel list';
-//   grid-template-rows: auto;
-//   grid-template-columns: 1fr 1fr;
-//   overflow: auto;
-//   background: ${({ theme }) => theme.colors.gray[900]};
-//   border: 1px solid red;
-
-//   @media screen and (min-width: 768px) and (max-width: 1023px) {
-//     grid-template-areas:
-//       'panel'
-//       'list';
-//     grid-template-columns: 1fr;
-//   }
-
-//   @media screen and (max-width: 767px) {
-//     grid-template-areas:
-//       'panel'
-//       'list';
-//     grid-template-columns: 1fr;
-//   }
-// `;
-
-// export const Nav = styled.div`
-//   height: 100%;
-// `;
