@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 
 type WrapperProps = {
-  loading?: boolean;
+  $loading?: boolean;
   size?: 'sm' | 'md' | 'lg' | 'xl';
   disabled?: boolean;
   error?: boolean;
@@ -56,7 +56,7 @@ const withSize = css`
 `;
 
 export const Wrapper = styled.div<WrapperProps>`
-  ${({ theme, disabled, error, loading }) => css`
+  ${({ theme, disabled, error, $loading }) => css`
     width: 100%;
     color: ${theme.colors.font};
     border-radius: 4px;
@@ -106,6 +106,6 @@ export const Wrapper = styled.div<WrapperProps>`
     ${withSize};
     ${disabled && whenDisabled};
     ${error && whenError};
-    ${loading && whenLoading};
+    ${$loading && whenLoading};
   `}
 `;

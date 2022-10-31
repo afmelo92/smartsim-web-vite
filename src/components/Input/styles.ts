@@ -32,6 +32,13 @@ const whenError = css`
 
 export const Wrapper = styled.div`
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  strong {
+    color: ${({ theme }) => theme.colors.primary.main};
+  }
 `;
 
 export const Container = styled.div<ContainerProps>`
@@ -40,10 +47,10 @@ export const Container = styled.div<ContainerProps>`
     border-radius: 4px;
     border: none;
     background: #fff;
-    padding: 8px 16px;
+    padding: 16px;
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 16px;
     width: 100%;
     font-size: 1rem;
     color: ${theme.colors.gray[600]};

@@ -1,0 +1,6 @@
+<svg fill="none" viewBox="0 0 34 36">
+  <path
+    d="M2 13.2 17 2l15 11.2v17.6c0 .849-.351 1.663-.976 2.263-.625.6-1.473.937-2.357.937H5.333a3.405 3.405 0 0 1-2.357-.937A3.136 3.136 0 0 1 2 30.8V13.2Z"
+    stroke="current" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M12 34V18h10v16" stroke="current" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+</svg>

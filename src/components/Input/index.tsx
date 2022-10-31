@@ -9,6 +9,7 @@ type Props = {
   lefticon?: string;
   righticon?: string;
   error?: boolean;
+  label?: string;
 };
 
 const Input: React.FC<Props & React.InputHTMLAttributes<HTMLInputElement>> = ({
@@ -18,6 +19,7 @@ const Input: React.FC<Props & React.InputHTMLAttributes<HTMLInputElement>> = ({
   righticon = '',
   disabled = false,
   id,
+  label,
   error,
   ...rest
 }) => {
@@ -33,6 +35,11 @@ const Input: React.FC<Props & React.InputHTMLAttributes<HTMLInputElement>> = ({
 
   return (
     <S.Wrapper>
+      {label && (
+        <label>
+          <strong>{label}</strong>
+        </label>
+      )}
       <S.Container focus={focus} disabled={disabled} error={error} id={id}>
         {lefticon ? <SVGWrapper iconName={lefticon} wrapperStyle='left-icon' /> : null}
         <input type={type} onFocus={() => handleFocus()} onBlur={() => handleBlur()} {...rest} />

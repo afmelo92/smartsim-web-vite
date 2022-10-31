@@ -24,7 +24,7 @@ const Button: React.FC<Props & React.ButtonHTMLAttributes<HTMLButtonElement>> = 
   ...rest
 }) => {
   return (
-    <S.Wrapper error={error} size={size} loading={loading} disabled={disabled} id={id}>
+    <S.Wrapper error={error} size={size} $loading={loading} disabled={disabled} id={id}>
       <button type={type} disabled={disabled || loading} {...rest}>
         {lefticon && !loading ? <SVGWrapper iconName={lefticon} wrapperStyle='left-icon' /> : null}
         {loading ? <Spinner /> : children}
