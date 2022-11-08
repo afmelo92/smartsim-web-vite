@@ -6,6 +6,7 @@ import Login from '@/pages/Login';
 import NotFound from '@/pages/NotFound';
 import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
+import Clients from '@/pages/Admin/Clients';
 
 export const router = createBrowserRouter([
   {
@@ -33,8 +34,16 @@ export const router = createBrowserRouter([
     },
     children: [
       {
+        path: '/',
+        loader: () => redirect('/home'),
+      },
+      {
         path: '/admin',
         element: <Admin />,
+      },
+      {
+        path: '/admin/clients',
+        element: <Clients />,
       },
       {
         path: '/home',
