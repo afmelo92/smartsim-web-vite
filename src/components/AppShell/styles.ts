@@ -111,6 +111,8 @@ export const NavItem = styled(NavLink)`
 
     &.active {
       color: ${theme.colors.primary.main};
+      border-left: 4px solid ${theme.colors.primary.main};
+      background: ${theme.colors.gray[900]};
 
       svg {
         stroke: ${theme.colors.primary.main};
