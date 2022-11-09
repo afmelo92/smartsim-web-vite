@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import {
   ColumnDef,
-  flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
@@ -12,8 +11,10 @@ import SVGWrapper from '@/components/SVGWrapper';
 import FilterInput from './components/FilterInput';
 
 import * as S from './styles';
-import Button from '@/components/Button';
-import Modal from '@/components/Modal';
+import UsersTable from './components/UsersTable';
+import Pagination from './components/Pagination';
+import DeleteModal from './components/DeleteModal';
+import EditModal from './components/EditModal';
 
 type User = {
   _id: string;
@@ -228,17 +229,33 @@ const Clients: React.FC = () => {
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [globalFilter, setGlobalFilter] = useState('');
+  const [selectedUser, setSelectedUser] = useState<User | null>();
+  const [columnVisibility, setColumnVisibility] = useState({});
 
   function handleOpenModal({ action, data }: { action: 'edit' | 'delete'; data: any }) {
     if (action === 'delete') {
       setDeleteModalIsOpen(true);
-      console.log({ data });
+
+      setSelectedUser(() => defaultData.find((user) => (user?._id === data?.id ? user : null)));
     }
 
     if (action === 'edit') {
       setEditModalIsOpen(true);
-      console.log({ data });
+
+      setSelectedUser(() => defaultData.find((user) => (user?._id === data?.id ? user : null)));
     }
+  }
+
+  function handleDelete() {
+    console.log(selectedUser);
+    setSelectedUser(null);
+    setDeleteModalIsOpen(false);
+  }
+
+  function handleEdit() {
+    console.log(selectedUser);
+    setSelectedUser(null);
+    setEditModalIsOpen(false);
   }
 
   const columns = useMemo<ColumnDef<User, any>[]>(
@@ -273,7 +290,14 @@ const Clients: React.FC = () => {
           <>
             <button
               className='edit-button'
-              onClick={() => handleOpenModal({ action: 'edit', data: null })}
+              onClick={() =>
+                handleOpenModal({
+                  action: 'edit',
+                  data: {
+                    id: row.original._id,
+                  },
+                })
+              }
               type='button'
               title='Editar usuário'
             >
@@ -285,7 +309,7 @@ const Clients: React.FC = () => {
                 handleOpenModal({
                   action: 'delete',
                   data: {
-                    name: row.original.name,
+                    id: row.original._id,
                   },
                 })
               }
@@ -311,11 +335,14 @@ const Clients: React.FC = () => {
     debugAll: true,
     state: {
       globalFilter,
+      // Implementar visibilidade dinamica baseado em viewport
+      columnVisibility,
     },
     globalFilterFn: 'includesString',
     enableFilters: true,
     enableColumnFilters: true,
     enableGlobalFilter: true,
+    onColumnVisibilityChange: setColumnVisibility,
   });
 
   return (
@@ -326,108 +353,22 @@ const Clients: React.FC = () => {
         placeholder='Pesquise por qualquer dado...'
         lefticon='magnifier'
       />
-      <table>
-        <thead>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <th key={header.id}>
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(header.column.columnDef.header, header.getContext())}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody>
-          {table.getRowModel().rows.map((row) => (
-            <tr key={row.id}>
-              {row.getVisibleCells().map((cell) => (
-                <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <S.Pagination className='flex items-center gap-2'>
-        <S.ArrowButtons>
-          <Button
-            id='arrow'
-            size='sm'
-            onClick={() => table.setPageIndex(0)}
-            disabled={!table.getCanPreviousPage()}
-          >
-            {'<<'}
-          </Button>
-          <Button
-            id='arrow'
-            size='sm'
-            className='border rounded p-1'
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            {'<'}
-          </Button>
-          <Button
-            id='arrow'
-            size='sm'
-            className='border rounded p-1'
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            {'>'}
-          </Button>
-          <Button
-            id='arrow'
-            size='sm'
-            className='border rounded p-1'
-            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-            disabled={!table.getCanNextPage()}
-          >
-            {'>>'}
-          </Button>
-        </S.ArrowButtons>
-        <S.PagesSection>
-          <div className='page-desc'>
-            <strong>
-              Pág. {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
-            </strong>
-          </div>
-          <div className='page-goto'>
-            <p>Ir para página: </p>
-            <input
-              type='number'
-              defaultValue={table.getState().pagination.pageIndex + 1}
-              onChange={(e) => {
-                const page = e.target.value ? Number(e.target.value) - 1 : 0;
-                table.setPageIndex(page);
-              }}
-              className='border p-1 rounded w-16'
-            />
-          </div>
-          <select
-            value={table.getState().pagination.pageSize}
-            onChange={(e) => {
-              table.setPageSize(Number(e.target.value));
-            }}
-          >
-            {[10, 20, 30, 40, 50].map((pageSize) => (
-              <option key={pageSize} value={pageSize}>
-                Mostrar {pageSize}
-              </option>
-            ))}
-          </select>
-        </S.PagesSection>
-      </S.Pagination>
-      <Modal isOpen={deleteModalIsOpen} setIsOpen={setDeleteModalIsOpen} id='delete'>
-        <S.DeleteModalContent>
-          <h1>HELLO DELETE</h1>
-        </S.DeleteModalContent>
-      </Modal>
-      <Modal isOpen={editModalIsOpen} setIsOpen={setEditModalIsOpen} id='edit'>
-        <h1>HELLO EDIT MODAL</h1>
-      </Modal>
+      <UsersTable table={table} />
+      <Pagination table={table} />
+      <DeleteModal
+        isOpen={deleteModalIsOpen}
+        setIsOpen={setDeleteModalIsOpen}
+        user={selectedUser}
+        handleDelete={handleDelete}
+        setDeleteModalIsOpen={setDeleteModalIsOpen}
+      />
+      <EditModal
+        isOpen={editModalIsOpen}
+        setIsOpen={setEditModalIsOpen}
+        user={selectedUser}
+        handleEdit={handleEdit}
+        setEditModalIsOpen={setEditModalIsOpen}
+      />
     </S.Wrapper>
   );
 };

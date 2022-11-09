@@ -20,5 +20,15 @@ export const OptionLink = styled(Link)`
       background: ${theme.colors.gray[600]};
       border-left: 4px solid ${theme.colors.primary.darker};
     }
+
+    @media screen and (min-width: 768px) and (max-width: 1023px) {
+      padding: 24px;
+      width: 100%;
+    }
+
+    @media screen and (max-width: 767px) {
+      padding: 24px;
+      width: 100%;
+    }
   `}
 `;
