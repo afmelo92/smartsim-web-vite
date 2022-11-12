@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Spinner from '../Spinner';
 import SVGWrapper from '../SVGWrapper';
 
 import * as S from './styles';
@@ -36,14 +37,32 @@ const Input: React.FC<Props & React.InputHTMLAttributes<HTMLInputElement>> = ({
   return (
     <S.Wrapper>
       {label && (
-        <label>
+        <label htmlFor={label}>
           <strong>{label}</strong>
         </label>
       )}
-      <S.Container focus={focus} disabled={disabled} error={error} id={id}>
+      <S.Container
+        loading={loading ? 1 : 0}
+        focus={focus}
+        disabled={disabled}
+        error={error}
+        id={id}
+      >
         {lefticon ? <SVGWrapper iconName={lefticon} wrapperStyle='left-icon' /> : null}
-        <input type={type} onFocus={() => handleFocus()} onBlur={() => handleBlur()} {...rest} />
-        {righticon ? <SVGWrapper iconName={righticon} wrapperStyle='right-icon' /> : null}
+        <input
+          id={label}
+          type={type}
+          onFocus={() => handleFocus()}
+          onBlur={() => handleBlur()}
+          {...rest}
+        />
+        {loading ? (
+          <Spinner />
+        ) : error ? (
+          <SVGWrapper iconName='alert' />
+        ) : righticon ? (
+          <SVGWrapper iconName={righticon} />
+        ) : null}
       </S.Container>
     </S.Wrapper>
   );

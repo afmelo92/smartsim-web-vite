@@ -1,17 +1,14 @@
 import styled, { css } from 'styled-components';
 
 type WrapperProps = {
-  $loading?: boolean;
+  loading?: number;
   size?: 'sm' | 'md' | 'lg' | 'xl';
   disabled?: boolean;
   error?: boolean;
 };
 
 const whenLoading = css`
-  ${() => `
-
-    cursor: wait;
-  `}
+  cursor: wait;
 `;
 
 const whenError = css`
@@ -40,15 +37,47 @@ const withSize = css`
       case 'sm':
         return `
           font-size: 0.8rem;
+          min-width: 120px;
           button {
+
             padding: 8px 16px;
+
             svg {
               width: 14px;
             }
           }
+
+          .spinner {
+            position: relative;
+            width: 14px;
+            height: 14px;
+
+            svg {
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+            }
+          }
         `;
       case 'md':
-        return 'font-size: 1rem;';
+        return `
+          font-size: 1rem;
+          min-height: 48px;
+
+          .spinner {
+            position: relative;
+            width: 20px;
+            height: 20px;
+            svg {
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+
+            }
+          }
+        `;
       default:
         return '';
     }
@@ -56,7 +85,7 @@ const withSize = css`
 `;
 
 export const Wrapper = styled.div<WrapperProps>`
-  ${({ theme, disabled, error, $loading }) => css`
+  ${({ theme, disabled, error, loading }) => css`
     width: 100%;
     color: ${theme.colors.font};
     border-radius: 4px;
@@ -93,19 +122,11 @@ export const Wrapper = styled.div<WrapperProps>`
       background: inherit;
       transition: ease 0.4s;
       position: relative;
-
-      .spinner {
-        svg {
-          width: 22px;
-          height: 22px;
-          fill: none;
-        }
-      }
     }
 
     ${withSize};
     ${disabled && whenDisabled};
     ${error && whenError};
-    ${$loading && whenLoading};
+    ${loading && whenLoading};
   `}
 `;
