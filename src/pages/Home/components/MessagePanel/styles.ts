@@ -42,6 +42,19 @@ export const PanelHeader = styled.div`
 
     #command {
       max-width: max-content;
+      position: relative;
+
+      :after {
+        position: absolute;
+        content: 'Em breve';
+        width: content;
+        height: content;
+        background: ${theme.colors.danger.main};
+        padding: 8px;
+        border-radius: 4px;
+        bottom: -15px;
+        left: -25%;
+      }
     }
 
     @media screen and (max-width: 767px) {
@@ -52,34 +65,16 @@ export const PanelHeader = styled.div`
   `}
 `;
 
-export const Form = styled.div`
-  ${({ theme }) => css`
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+export const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 
-    label {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      font-size: 0.9rem;
-      color: ${theme.colors.primary.light};
+  @media screen and (max-width: 767px) {
+    h2 {
+      font-size: 1.2rem;
     }
-
-    textarea {
-      min-height: 150px;
-      resize: none;
-      padding: 8px 16px;
-      font-size: 1rem;
-      border-radius: 4px;
-    }
-
-    @media screen and (max-width: 767px) {
-      h2 {
-        font-size: 1.2rem;
-      }
-    }
-  `}
+  }
 `;
 
 export const CommandsSection = styled.section`

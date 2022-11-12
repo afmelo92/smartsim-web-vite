@@ -9,6 +9,7 @@ export const Wrapper = styled.div`
   flex-direction: column;
   border-radius: 4px;
   gap: 8px;
+  min-height: calc(100vh - 96px);
 
   @media screen and (min-width: 768px) and (max-width: 1023px) {
     padding: 8px;
@@ -45,10 +46,39 @@ export const MessagesHeader = styled.div`
 `;
 
 export const MessagesContainer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  ${({ theme }) => css`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    position: relative;
+
+    h3 {
+      margin-bottom: 32px;
+    }
+
+    .empty-messages {
+      margin-top: 32px;
+      width: 120px;
+    }
+
+    .spinner {
+      position: relative;
+      width: 150px;
+      height: 150px;
+      top: 100%;
+
+      svg {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+
+        stroke: ${theme.colors.primary.lighter};
+      }
+    }
+  `}
 `;
 
 export const MessageBox = styled.div`
@@ -94,5 +124,19 @@ export const MessageData = styled.div`
 
   @media screen and (max-width: 767px) {
     padding: 4px;
+  }
+`;
+
+export const Pagination = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  #pag-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: min-content;
   }
 `;

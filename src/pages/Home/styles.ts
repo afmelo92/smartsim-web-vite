@@ -9,7 +9,7 @@ export const Wrapper = styled.div`
   overflow-y: auto;
   overflow-x: hidden;
   background: ${({ theme }) => theme.colors.gray[900]};
-
+  min-height: calc(100vh - 96px);
   @media screen and (min-width: 768px) and (max-width: 1023px) {
     grid-template-areas:
       'panel'
