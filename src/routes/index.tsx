@@ -7,6 +7,7 @@ import NotFound from '@/pages/NotFound';
 import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
 import Clients from '@/pages/Admin/Clients';
+import Profile from '@/pages/Profile';
 
 export const router = createBrowserRouter([
   {
@@ -26,11 +27,10 @@ export const router = createBrowserRouter([
     element: <AppShell />,
     errorElement: <NotFound />,
     loader: () => {
-      const user = localStorage.getItem('user');
-
-      if (!user) {
-        return redirect('/login');
-      }
+      // const user = localStorage.getItem('user');
+      // if (!user) {
+      //   return redirect('/login');
+      // }
     },
     children: [
       {
@@ -48,6 +48,10 @@ export const router = createBrowserRouter([
       {
         path: '/home',
         element: <Home />,
+      },
+      {
+        path: '/profile',
+        element: <Profile />,
       },
     ],
   },
