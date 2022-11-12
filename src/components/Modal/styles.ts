@@ -43,12 +43,12 @@ export const Container = styled.div<ContainerProps>`
 `;
 
 export const Content = styled.div`
-  ${() => css`
+  ${({ theme }) => css`
     width: 90%;
     height: 90%;
     max-width: 100%;
     max-height: 100%;
-    background: white;
+    background: ${theme.colors.gray[500]};
     border-radius: 4px;
     padding: 32px;
     display: flex;

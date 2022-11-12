@@ -3,6 +3,9 @@ import Modal from '@/components/Modal';
 import Button from '@/components/Button';
 
 import * as S from './styles';
+import HookFormInput from '@/components/HookFormInput';
+import { useForm } from 'react-hook-form';
+import { onlyNumbers } from '@/utils/filters';
 
 type User = {
   _id: string;
@@ -25,6 +28,11 @@ type ModalProps = {
   user?: User | null;
 };
 
+type Inputs = {
+  sms_key: string;
+  credits: string;
+};
+
 const EditModal: React.FC<ModalProps> = ({
   isOpen,
   setIsOpen,
@@ -32,16 +40,63 @@ const EditModal: React.FC<ModalProps> = ({
   setEditModalIsOpen,
   user,
 }) => {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    // watch,
+    // setValue,
+  } = useForm<Inputs>({
+    defaultValues: {
+      sms_key: '',
+      credits: '',
+      // search: '',
+    },
+    // resolver: yupResolver(sendMessageSchema),
+    mode: 'onChange',
+    reValidateMode: 'onChange',
+  });
+
   return (
-    <Modal isOpen={isOpen} setIsOpen={setIsOpen} id='delete'>
+    <Modal isOpen={isOpen} setIsOpen={setIsOpen} id='edit'>
       <S.Content>
-        <h1>Atenção!</h1>
-        <h2>
-          Tem certeza que deseja excluir o usuário <strong>{user?.name}</strong> ?
-        </h2>
+        <h1>
+          Editar usuário <strong>{user?.name}</strong>
+        </h1>
+
+        <S.Form onSubmit={handleSubmit(handleEdit)}>
+          <HookFormInput
+            label='Chave'
+            name='sms_key'
+            id='sms_key'
+            placeholder='Insira a chave SMS'
+            lefticon='key'
+            control={control}
+            errors={errors}
+            autoComplete='new-password'
+            transform={{
+              input: (value: string) => value,
+              output: (e: React.BaseSyntheticEvent) => e.target.value,
+            }}
+          />
+          <HookFormInput
+            label='Créditos'
+            name='credits'
+            id='credits'
+            placeholder='Atualize a quantidade de créditos'
+            lefticon='credits'
+            control={control}
+            errors={errors}
+            autoComplete='new-password'
+            transform={{
+              input: (value: string) => value,
+              output: (e: React.BaseSyntheticEvent) => onlyNumbers(e.target.value),
+            }}
+          />
+        </S.Form>
         <div>
-          <Button onClick={() => handleEdit()} id='delete'>
-            Excluir
+          <Button onClick={() => handleEdit()} id='edit'>
+            Editar
           </Button>
           <Button onClick={() => setEditModalIsOpen(false)} id='cancel'>
             Cancelar
