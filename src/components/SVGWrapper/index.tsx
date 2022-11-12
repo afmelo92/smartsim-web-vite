@@ -2,13 +2,13 @@ import { useDynamicSvgImport } from '../../hooks/useDynamicSvgImport';
 
 import * as S from './styles';
 
-interface IProps {
+interface SVGWrapperProps {
   iconName: string;
   wrapperStyle?: string;
   svgProp?: React.SVGProps<SVGSVGElement>;
 }
 
-function SVGWrapper(props: IProps) {
+function SVGWrapper(props: SVGWrapperProps) {
   const { iconName, wrapperStyle, svgProp } = props;
   const { loading, SvgIcon } = useDynamicSvgImport(iconName);
 

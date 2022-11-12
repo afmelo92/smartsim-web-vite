@@ -16,10 +16,10 @@ export const Content = styled.div`
     }
 
     h2 {
-      color: ${theme.colors.gray[500]};
+      /* color: ${theme.colors.gray[500]}; */
 
       strong {
-        color: ${theme.colors.primary.main};
+        color: ${theme.colors.danger.main};
       }
     }
 
@@ -38,10 +38,10 @@ export const Content = styled.div`
 
       #cancel {
         width: 96px;
-        background: ${theme.colors.gray[100]};
+        background: ${theme.colors.gray[300]};
 
         &:hover {
-          background: ${theme.colors.gray[200]};
+          background: ${theme.colors.gray[400]};
         }
       }
     }

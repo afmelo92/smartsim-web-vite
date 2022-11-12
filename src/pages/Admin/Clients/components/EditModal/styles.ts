@@ -11,16 +11,12 @@ export const Content = styled.div`
     gap: 32px;
     text-align: center;
 
-    h1 {
+    strong {
       color: ${theme.colors.primary.main};
     }
 
     h2 {
       color: ${theme.colors.gray[500]};
-
-      strong {
-        color: ${theme.colors.primary.main};
-      }
     }
 
     #edit-input {
@@ -42,12 +38,26 @@ export const Content = styled.div`
 
       #cancel {
         width: 96px;
-        background: ${theme.colors.gray[100]};
+        background: ${theme.colors.gray[300]};
 
         &:hover {
-          background: ${theme.colors.gray[200]};
+          background: ${theme.colors.gray[400]};
         }
       }
+    }
+  `}
+`;
+
+export const Form = styled.form`
+  ${({ theme }) => css`
+    /* border: 1px solid red; */
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 16px;
+
+    strong {
+      color: ${theme.colors.primary.main};
     }
   `}
 `;

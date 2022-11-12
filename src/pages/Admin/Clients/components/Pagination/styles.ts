@@ -16,6 +16,7 @@ export const ArrowButtons = styled.div`
 
   #arrow {
     max-width: max-content;
+    min-width: 50px;
   }
 
   @media screen and (min-width: 768px) and (max-width: 1023px) {
