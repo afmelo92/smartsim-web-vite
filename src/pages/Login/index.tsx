@@ -1,20 +1,83 @@
 import Button from '@/components/Button';
-import Input from '@/components/Input';
-import React from 'react';
+import HookFormInput from '@/components/HookFormInput';
+import { loginSchema } from '@/utils/validationSchemas';
+import { yupResolver } from '@hookform/resolvers/yup';
+import React, { useState } from 'react';
+import { useForm, SubmitHandler } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 
 import * as S from './styles';
 
+type Inputs = {
+  email: string;
+  password: string;
+};
+
 const Login: React.FC = () => {
+  const [loading, setLoading] = useState(false);
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Inputs>({
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+    resolver: yupResolver(loginSchema),
+    mode: 'onChange',
+    reValidateMode: 'onChange',
+  });
+
+  const onSubmit: SubmitHandler<Inputs> = (data, e) => {
+    setLoading(true);
+    console.log(data, e);
+    setTimeout(() => {
+      console.log('login');
+      setLoading(false);
+    }, 2000);
+  };
+
   return (
     <S.Wrapper>
       <S.Container>
-        <S.Form>
+        <S.Form onSubmit={handleSubmit(onSubmit)}>
           <S.Fields className='fields'>
             <h1>Faça seu login</h1>
-            <Input placeholder='Insira seu e-mail' lefticon='mail' label='E-mail' />
-            <Input type='password' placeholder='Sua senha secreta' lefticon='lock' label='Senha' />
-            <Button>Entrar</Button>
+            <HookFormInput
+              label='E-mail'
+              name='email'
+              id='email'
+              placeholder='Insira seu e-mail cadastrado'
+              lefticon='mail'
+              control={control}
+              errors={errors}
+              autoComplete='new-password'
+              loading={loading}
+              transform={{
+                input: (value: string) => value,
+                output: (e: React.BaseSyntheticEvent) => String(e.target.value),
+              }}
+            />
+            <HookFormInput
+              label='Senha'
+              name='password'
+              id='password'
+              placeholder='Insira sua senha secreta'
+              lefticon='lock'
+              control={control}
+              errors={errors}
+              autoComplete='new-password'
+              loading={loading}
+              type='password'
+              transform={{
+                input: (value: string) => value,
+                output: (e: React.BaseSyntheticEvent) => String(e.target.value),
+              }}
+            />
+            <Button error={Object.keys(errors).length > 0} loading={loading} type='submit'>
+              Entrar
+            </Button>
           </S.Fields>
           <S.Options>
             <Link to='/forgot-password'>Esqueci minha senha</Link>
