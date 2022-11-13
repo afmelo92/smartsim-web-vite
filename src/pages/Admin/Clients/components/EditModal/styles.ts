@@ -10,6 +10,7 @@ export const Content = styled.div`
     justify-content: center;
     gap: 32px;
     text-align: center;
+    position: relative;
 
     strong {
       color: ${theme.colors.primary.main};
@@ -50,7 +51,6 @@ export const Content = styled.div`
 
 export const Form = styled.form`
   ${({ theme }) => css`
-    /* border: 1px solid red; */
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -60,4 +60,11 @@ export const Form = styled.form`
       color: ${theme.colors.primary.main};
     }
   `}
+`;
+
+export const ButtonsContainer = styled.div`
+  display: flex;
+  position: absolute;
+  bottom: 0;
+  align-self: end;
 `;

@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Modal from '@/components/Modal';
 import Button from '@/components/Button';
 
 import * as S from './styles';
 import HookFormInput from '@/components/HookFormInput';
-import { useForm } from 'react-hook-form';
+import { useForm, SubmitHandler } from 'react-hook-form';
 import { onlyNumbers } from '@/utils/filters';
 
 type User = {
@@ -20,42 +20,45 @@ type User = {
   avatar: string | null;
 };
 
-type ModalProps = {
+type EditModalProps = {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  handleEdit: () => void;
+  onSubmit: SubmitHandler<EditModalInputs>;
   setEditModalIsOpen: (value: boolean) => void;
   user?: User | null;
+  loading?: boolean;
 };
 
-type Inputs = {
+export type EditModalInputs = {
   sms_key: string;
   credits: string;
 };
 
-const EditModal: React.FC<ModalProps> = ({
+const EditModal: React.FC<EditModalProps> = ({
   isOpen,
   setIsOpen,
-  handleEdit,
+  onSubmit,
   setEditModalIsOpen,
   user,
+  loading = false,
 }) => {
   const {
     control,
     handleSubmit,
-    formState: { errors },
-    // watch,
-    // setValue,
-  } = useForm<Inputs>({
+    formState: { errors, isSubmitSuccessful },
+    reset,
+  } = useForm<EditModalInputs>({
     defaultValues: {
       sms_key: '',
       credits: '',
-      // search: '',
     },
-    // resolver: yupResolver(sendMessageSchema),
-    mode: 'onChange',
+    mode: 'onSubmit',
     reValidateMode: 'onChange',
   });
+
+  useEffect(() => {
+    reset();
+  }, [isSubmitSuccessful]);
 
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen} id='edit'>
@@ -64,7 +67,7 @@ const EditModal: React.FC<ModalProps> = ({
           Editar usuário <strong>{user?.name}</strong>
         </h1>
 
-        <S.Form onSubmit={handleSubmit(handleEdit)}>
+        <S.Form onSubmit={handleSubmit(onSubmit)}>
           <HookFormInput
             label='Chave'
             name='sms_key'
@@ -74,6 +77,7 @@ const EditModal: React.FC<ModalProps> = ({
             control={control}
             errors={errors}
             autoComplete='new-password'
+            loading={loading}
             transform={{
               input: (value: string) => value,
               output: (e: React.BaseSyntheticEvent) => e.target.value,
@@ -88,20 +92,22 @@ const EditModal: React.FC<ModalProps> = ({
             control={control}
             errors={errors}
             autoComplete='new-password'
+            loading={loading}
             transform={{
               input: (value: string) => value,
               output: (e: React.BaseSyntheticEvent) => onlyNumbers(e.target.value),
             }}
           />
+
+          <S.ButtonsContainer>
+            <Button loading={loading} type='submit' id='edit'>
+              Editar
+            </Button>
+            <Button onClick={() => setEditModalIsOpen(false)} id='cancel'>
+              Cancelar
+            </Button>
+          </S.ButtonsContainer>
         </S.Form>
-        <div>
-          <Button onClick={() => handleEdit()} id='edit'>
-            Editar
-          </Button>
-          <Button onClick={() => setEditModalIsOpen(false)} id='cancel'>
-            Cancelar
-          </Button>
-        </div>
       </S.Content>
     </Modal>
   );

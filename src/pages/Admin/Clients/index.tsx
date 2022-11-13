@@ -14,7 +14,8 @@ import * as S from './styles';
 import UsersTable from './components/UsersTable';
 import Pagination from './components/Pagination';
 import DeleteModal from './components/DeleteModal';
-import EditModal from './components/EditModal';
+import EditModal, { EditModalInputs } from './components/EditModal';
+import { SubmitHandler } from 'react-hook-form';
 
 type User = {
   _id: string;
@@ -228,6 +229,8 @@ const Clients: React.FC = () => {
   const [data] = useState<User[]>(() => [...defaultData]);
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
+  const [editModalLoading, setEditModalLoading] = useState(false);
+  const [deleteModalLoading, setDeleteModalLoading] = useState(false);
   const [globalFilter, setGlobalFilter] = useState('');
   const [selectedUser, setSelectedUser] = useState<User | null>();
   const [columnVisibility, setColumnVisibility] = useState({});
@@ -247,16 +250,27 @@ const Clients: React.FC = () => {
   }
 
   function handleDelete() {
-    console.log(selectedUser);
-    setSelectedUser(null);
-    setDeleteModalIsOpen(false);
+    setDeleteModalLoading(true);
+    setTimeout(() => {
+      console.log('deleted!!');
+      console.log(selectedUser);
+      setDeleteModalLoading(false);
+      setDeleteModalIsOpen(false);
+      setSelectedUser(null);
+    }, 2000);
   }
 
-  function handleEdit() {
-    console.log(selectedUser);
-    setSelectedUser(null);
-    setEditModalIsOpen(false);
-  }
+  const handleEdit: SubmitHandler<EditModalInputs> = (data, e) => {
+    setEditModalLoading(true);
+    console.log(data, e);
+    setTimeout(() => {
+      console.log('edited!');
+      console.log(selectedUser);
+      setEditModalLoading(false);
+      setEditModalIsOpen(false);
+      setSelectedUser(null);
+    }, 2000);
+  };
 
   const columns = useMemo<ColumnDef<User, any>[]>(
     () => [
@@ -361,13 +375,15 @@ const Clients: React.FC = () => {
         user={selectedUser}
         handleDelete={handleDelete}
         setDeleteModalIsOpen={setDeleteModalIsOpen}
+        loading={deleteModalLoading}
       />
       <EditModal
         isOpen={editModalIsOpen}
         setIsOpen={setEditModalIsOpen}
         user={selectedUser}
-        handleEdit={handleEdit}
+        onSubmit={handleEdit}
         setEditModalIsOpen={setEditModalIsOpen}
+        loading={editModalLoading}
       />
     </S.Wrapper>
   );

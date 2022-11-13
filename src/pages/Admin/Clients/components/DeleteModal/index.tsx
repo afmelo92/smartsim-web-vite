@@ -23,6 +23,7 @@ type ModalProps = {
   handleDelete: () => void;
   setDeleteModalIsOpen: (value: boolean) => void;
   user?: User | null;
+  loading?: boolean;
 };
 
 const DeleteModal: React.FC<ModalProps> = ({
@@ -31,6 +32,7 @@ const DeleteModal: React.FC<ModalProps> = ({
   handleDelete,
   setDeleteModalIsOpen,
   user,
+  loading = false,
 }) => {
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen} id='delete'>
@@ -40,7 +42,7 @@ const DeleteModal: React.FC<ModalProps> = ({
           Tem certeza que deseja excluir o usuário <strong>{user?.name}</strong> ?
         </h2>
         <div>
-          <Button onClick={() => handleDelete()} id='delete'>
+          <Button loading={loading} onClick={() => handleDelete()} id='delete'>
             Excluir
           </Button>
           <Button onClick={() => setDeleteModalIsOpen(false)} id='cancel'>

@@ -21,11 +21,12 @@ type Message = {
 
 type MessageListProps = {
   messages: Message[];
-  handleRefresh: () => void;
+  onRefresh: () => void;
   loading: boolean;
 };
 
-const Messagelist: React.FC<MessageListProps> = ({ messages, handleRefresh, loading = false }) => {
+const Messagelist: React.FC<MessageListProps> = ({ messages, onRefresh, loading = false }) => {
+  const [pagination, setPagination] = useState({ index: 0, offset: 5 });
   const {
     control,
     formState: { errors },
@@ -50,16 +51,14 @@ const Messagelist: React.FC<MessageListProps> = ({ messages, handleRefresh, load
           message.mensagem.toLowerCase().includes(search.toLowerCase()) ||
           message.telefone.toString().includes(search)
       ),
-    [messages, search]
+    [messages, messages.length, search]
   );
-
-  const [pagination, setPagination] = useState({ index: 0, offset: 5 });
 
   return (
     <S.Wrapper>
       <S.MessagesHeader>
         <h2>Mensagens enviadas</h2>
-        <Button onClick={handleRefresh} loading={loading} size='sm' lefticon='refresh' id='refresh'>
+        <Button onClick={onRefresh} loading={loading} size='sm' lefticon='refresh' id='refresh'>
           Recarregar
         </Button>
       </S.MessagesHeader>

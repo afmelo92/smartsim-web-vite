@@ -1,5 +1,5 @@
 import React from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import HookFormInput from '@/components/HookFormInput';
 import Button from '@/components/Button';
@@ -10,18 +10,18 @@ import * as S from './styles';
 import HookFormTextarea from '@/components/HookFormTextarea';
 
 type MessagePanelProps = {
-  handleSendMessage: () => void;
+  onSubmit: SubmitHandler<MessagePanelInputs>;
   recentMessages: { id: string; content: string }[];
   loading: boolean;
 };
 
-type Inputs = {
+export type MessagePanelInputs = {
   destination: string;
   content: string;
 };
 
 const MessagePanel: React.FC<MessagePanelProps> = ({
-  handleSendMessage,
+  onSubmit,
   recentMessages,
   loading = false,
 }) => {
@@ -29,16 +29,14 @@ const MessagePanel: React.FC<MessagePanelProps> = ({
     control,
     handleSubmit,
     formState: { errors },
-    // watch,
     setValue,
-  } = useForm<Inputs>({
+  } = useForm<MessagePanelInputs>({
     defaultValues: {
       destination: '',
       content: '',
-      // search: '',
     },
     resolver: yupResolver(sendMessageSchema),
-    mode: 'onChange',
+    mode: 'onSubmit',
     reValidateMode: 'onChange',
   });
 
@@ -51,7 +49,7 @@ const MessagePanel: React.FC<MessagePanelProps> = ({
             Criar comando
           </Button>
         </S.PanelHeader>
-        <S.Form onSubmit={handleSubmit(handleSendMessage)}>
+        <S.Form onSubmit={handleSubmit(onSubmit)}>
           <HookFormInput
             label='Destino'
             name='destination'
