@@ -45,7 +45,7 @@ const DeleteModal: React.FC<ModalProps> = ({
           <Button loading={loading} onClick={() => handleDelete()} id='delete'>
             Excluir
           </Button>
-          <Button onClick={() => setDeleteModalIsOpen(false)} id='cancel'>
+          <Button disabled={loading} onClick={() => setDeleteModalIsOpen(false)} id='cancel'>
             Cancelar
           </Button>
         </div>

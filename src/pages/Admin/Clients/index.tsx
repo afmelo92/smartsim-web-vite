@@ -16,6 +16,7 @@ import Pagination from './components/Pagination';
 import DeleteModal from './components/DeleteModal';
 import EditModal, { EditModalInputs } from './components/EditModal';
 import { SubmitHandler } from 'react-hook-form';
+import toast from '@/components/Toast';
 
 type User = {
   _id: string;
@@ -28,6 +29,13 @@ type User = {
   updatedAt: string;
   admin: boolean;
   avatar: string | null;
+};
+
+type OpenModalProps = {
+  action: 'edit' | 'delete';
+  data: {
+    id: string;
+  };
 };
 
 const defaultData: User[] = [
@@ -235,7 +243,7 @@ const Clients: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>();
   const [columnVisibility, setColumnVisibility] = useState({});
 
-  function handleOpenModal({ action, data }: { action: 'edit' | 'delete'; data: any }) {
+  function handleOpenModal({ action, data }: OpenModalProps) {
     if (action === 'delete') {
       setDeleteModalIsOpen(true);
 
@@ -254,6 +262,10 @@ const Clients: React.FC = () => {
     setTimeout(() => {
       console.log('deleted!!');
       console.log(selectedUser);
+      toast({
+        type: 'success',
+        text: 'Usuário excluído com sucesso!',
+      });
       setDeleteModalLoading(false);
       setDeleteModalIsOpen(false);
       setSelectedUser(null);
@@ -266,6 +278,10 @@ const Clients: React.FC = () => {
     setTimeout(() => {
       console.log('edited!');
       console.log(selectedUser);
+      toast({
+        type: 'success',
+        text: 'Usuário editado com sucesso!',
+      });
       setEditModalLoading(false);
       setEditModalIsOpen(false);
       setSelectedUser(null);

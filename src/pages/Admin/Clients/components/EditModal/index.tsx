@@ -103,7 +103,7 @@ const EditModal: React.FC<EditModalProps> = ({
             <Button loading={loading} type='submit' id='edit'>
               Editar
             </Button>
-            <Button onClick={() => setEditModalIsOpen(false)} id='cancel'>
+            <Button disabled={loading} onClick={() => setEditModalIsOpen(false)} id='cancel'>
               Cancelar
             </Button>
           </S.ButtonsContainer>
