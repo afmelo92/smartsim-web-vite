@@ -48,7 +48,7 @@ export const updateUserSchema = yup
         [yup.ref('email'), 'A confirmação deve ser igual ao e-mail'],
         'A confirmação deve ser igual ao e-mail'
       ),
-    password: yup
+    new_password: yup
       .string()
       .transform((value) => value || null)
       .nullable()
@@ -58,7 +58,7 @@ export const updateUserSchema = yup
       .transform((value) => value || null)
       .nullable()
       .oneOf(
-        [yup.ref('password'), 'A confirmação deve ser igual à senha'],
+        [yup.ref('new_password'), 'A confirmação deve ser igual à senha'],
         'A confirmação deve ser igual à senha'
       ),
   })

@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import bannerSrc from '@/assets/images/woman.jpg';
 
 export const Wrapper = styled.div`
-  border: 1px solid red;
   height: 100vh;
   display: flex;
   align-items: center;
@@ -30,7 +29,7 @@ export const Container = styled.div`
   }
 `;
 
-export const Form = styled.div`
+export const Form = styled.form`
   grid-area: form;
 
   display: flex;

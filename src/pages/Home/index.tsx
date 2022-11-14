@@ -2,6 +2,8 @@ import React, { useMemo, useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import Messagelist from './components/Messagelist';
 import MessagePanel, { MessagePanelInputs } from './components/MessagePanel';
+import toast from '@/components/Toast';
+
 import * as S from './styles';
 
 const Home: React.FC = () => {
@@ -139,6 +141,10 @@ const Home: React.FC = () => {
     setTimeout(() => {
       console.log('refreshed!');
       setMessageListLoading(false);
+      toast({
+        type: 'success',
+        text: 'Mensagens carregadas com sucesso!',
+      });
     }, 2000);
   }
 
@@ -162,6 +168,10 @@ const Home: React.FC = () => {
         },
         ...prev,
       ]);
+      toast({
+        type: 'success',
+        text: 'Mensagem enviada com sucesso!',
+      });
     }, 2000);
   };
 

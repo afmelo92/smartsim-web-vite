@@ -1,10 +1,10 @@
+import React, { useState } from 'react';
 import Button from '@/components/Button';
 import HookFormInput from '@/components/HookFormInput';
 import { loginSchema } from '@/utils/validationSchemas';
 import { yupResolver } from '@hookform/resolvers/yup';
-import React, { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import * as S from './styles';
 
@@ -15,6 +15,7 @@ type Inputs = {
 
 const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const {
     control,
     handleSubmit,
@@ -25,16 +26,18 @@ const Login: React.FC = () => {
       password: '',
     },
     resolver: yupResolver(loginSchema),
-    mode: 'onChange',
+    mode: 'onSubmit',
     reValidateMode: 'onChange',
   });
 
   const onSubmit: SubmitHandler<Inputs> = (data, e) => {
     setLoading(true);
-    console.log(data, e);
     setTimeout(() => {
-      console.log('login');
+      console.log(data, e);
       setLoading(false);
+      navigate('/home', {
+        replace: true,
+      });
     }, 2000);
   };
 

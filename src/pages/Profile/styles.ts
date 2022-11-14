@@ -1,15 +1,13 @@
 import styled, { css } from 'styled-components';
 
 export const Wrapper = styled.div`
-  /* border: 1px solid red; */
   min-height: 100%;
   display: flex;
   justify-content: center;
 `;
 
-export const Container = styled.div`
+export const Container = styled.form`
   ${({ theme }) => css`
-    /* border: 1px solid yellow; */
     background: ${theme.colors.gray[500]};
     border-radius: 4px;
     display: flex;
@@ -18,6 +16,7 @@ export const Container = styled.div`
     gap: 16px;
     padding: 16px;
     position: relative;
+    min-width: 450px;
 
     img {
       border: 4px solid ${theme.colors.primary.main};
@@ -37,6 +36,7 @@ export const Container = styled.div`
     }
 
     @media screen and (max-width: 767px) {
+      min-width: auto;
       #submit-button {
         position: static;
         max-width: 100%;
