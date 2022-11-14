@@ -1,6 +1,6 @@
 /* eslint-disable consistent-return */
 import React, { useRef, useCallback, useEffect, ReactNode } from 'react';
-import ReactDOM from 'react-dom';
+import ReactPortal from '../ReactPortal';
 import SVGWrapper from '../SVGWrapper';
 
 import * as S from './styles';
@@ -44,14 +44,17 @@ const Modal: React.FC<ModalProps> = ({ children, isOpen, setIsOpen, id }) => {
       setIsOpen((prev) => !prev);
     }
   };
-  return ReactDOM.createPortal(
-    <S.Container isOpen={isOpen} onClick={closeModal} ref={containerRef} id={id}>
-      <S.Content>{children}</S.Content>
-      <S.Close type='button' onClick={handleClose}>
-        <SVGWrapper iconName='close' />
-      </S.Close>
-    </S.Container>,
-    document.getElementById('modal-root') as HTMLElement
+
+  return (
+    <ReactPortal containerId='modal-root'>
+      <S.Container isOpen={isOpen} onClick={closeModal} ref={containerRef} id={id}>
+        <S.Content>{children}</S.Content>
+        <S.Close type='button' onClick={handleClose}>
+          <SVGWrapper iconName='close' />
+        </S.Close>
+      </S.Container>
+      ,
+    </ReactPortal>
   );
 };
 
