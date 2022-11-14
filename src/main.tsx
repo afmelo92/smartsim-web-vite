@@ -7,10 +7,12 @@ import theme from './styles/theme';
 import App from './components/App';
 import GlobalStyle from './styles/global';
 import { router } from './routes';
+import ToastContainer from './components/Toast/Container';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <ThemeProvider theme={theme as DefaultTheme}>
+      <ToastContainer />
       <App>
         <RouterProvider router={router} />
       </App>
