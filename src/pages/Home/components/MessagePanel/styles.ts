@@ -99,6 +99,14 @@ export const CommandsContainer = styled.div`
     font-size: 0.8rem;
     button {
       padding: 8px;
+
+      p {
+        text-align: center;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        width: 80%;
+        overflow: hidden;
+      }
     }
 
     svg {
@@ -115,12 +123,6 @@ export const CommandsContainer = styled.div`
     #command {
       button {
         padding: 8px 4px;
-      }
-
-      svg {
-        width: 0;
-        height: 0;
-        display: none;
       }
     }
   }

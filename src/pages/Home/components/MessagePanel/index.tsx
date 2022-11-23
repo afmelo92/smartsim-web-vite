@@ -22,7 +22,7 @@ export type MessagePanelInputs = {
 
 const MessagePanel: React.FC<MessagePanelProps> = ({
   onSubmit,
-  recentMessages,
+  recentMessages = [],
   loading = false,
 }) => {
   const {
@@ -86,22 +86,27 @@ const MessagePanel: React.FC<MessagePanelProps> = ({
         </S.Form>
       </S.Container>
       <S.Container>
-        <S.PanelHeader>
-          <h2>Mensagens recentes</h2>
-        </S.PanelHeader>
-        <S.CommandsContainer>
-          {recentMessages.map((command) => (
-            <Button
-              key={command.id}
-              size='sm'
-              lefticon='command'
-              id='command'
-              onClick={() => setValue('content', `${command.content}`)}
-            >
-              {command.content}
-            </Button>
-          ))}
-        </S.CommandsContainer>
+        {recentMessages.length > 0 ? (
+          <>
+            <S.PanelHeader>
+              <h2>Mensagens recentes</h2>
+            </S.PanelHeader>
+            <S.CommandsContainer>
+              {recentMessages.map((command) => (
+                <Button
+                  title={command.content}
+                  key={command.id}
+                  size='sm'
+                  lefticon='command'
+                  id='command'
+                  onClick={() => setValue('content', `${command.content}`)}
+                >
+                  <p>{command.content}</p>
+                </Button>
+              ))}
+            </S.CommandsContainer>
+          </>
+        ) : null}
       </S.Container>
     </S.Wrapper>
   );

@@ -6,26 +6,15 @@ import SVGWrapper from '@/components/SVGWrapper';
 import HookFormInput from '@/components/HookFormInput';
 import { useForm } from 'react-hook-form';
 import Spinner from '@/components/Spinner';
-
-type Message = {
-  situacao: string;
-  codigo: string;
-  id: string;
-  data_envio: string;
-  operadora: string;
-  qtd_credito: string;
-  descricao: string;
-  mensagem: string;
-  telefone: string;
-};
+import { FormattedMessage } from '../..';
 
 type MessageListProps = {
-  messages: Message[];
+  messages: FormattedMessage[];
   onRefresh: () => void;
   loading: boolean;
 };
 
-const Messagelist: React.FC<MessageListProps> = ({ messages, onRefresh, loading = false }) => {
+const Messagelist: React.FC<MessageListProps> = ({ messages = [], onRefresh, loading = false }) => {
   const [pagination, setPagination] = useState({ index: 0, offset: 5 });
   const {
     control,
@@ -44,8 +33,7 @@ const Messagelist: React.FC<MessageListProps> = ({ messages, onRefresh, loading 
     () =>
       messages.filter(
         (message) =>
-          message.descricao.toLowerCase().includes(search.toLowerCase()) ||
-          message.situacao.toLowerCase().includes(search.toLowerCase()) ||
+          message.status.toLowerCase().includes(search.toLowerCase()) ||
           message.operadora.toLowerCase().includes(search.toLowerCase()) ||
           message.data_envio.toLowerCase().includes(search.toLowerCase()) ||
           message.mensagem.toLowerCase().includes(search.toLowerCase()) ||
@@ -73,6 +61,7 @@ const Messagelist: React.FC<MessageListProps> = ({ messages, onRefresh, loading 
         errors={errors}
         autoComplete='new-password'
         loading={loading}
+        defaultValue=''
         transform={{
           input: (value: string) => value,
           output: (e: React.BaseSyntheticEvent) => String(e.target.value),
@@ -100,7 +89,7 @@ const Messagelist: React.FC<MessageListProps> = ({ messages, onRefresh, loading 
               </S.MessageHeader>
               <S.MessageData>
                 <p>{msg.data_envio}</p>
-                <p>{msg.descricao}</p>
+                <p>{msg.status}</p>
                 <p>{msg.operadora}</p>
                 <p>{msg.mensagem}</p>
                 <p>{msg.telefone}</p>

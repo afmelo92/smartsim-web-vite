@@ -3,195 +3,124 @@ import { SubmitHandler } from 'react-hook-form';
 import Messagelist from './components/Messagelist';
 import MessagePanel, { MessagePanelInputs } from './components/MessagePanel';
 import toast from '@/components/Toast';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { formatDate } from '@/utils/filters';
+
+import { fetchUserMessagesById } from '@/services/queries';
+import { ErrorProps, sendMessage } from '@/services/mutations';
+import { useAuth } from '@/hooks/useAuth';
 
 import * as S from './styles';
 
+type Message = {
+  _id: string;
+  user_id: string;
+  content: string;
+  destination: string;
+  sms_provider_id: string;
+  sms_provider_status: string;
+  sms_provider_telecom_service: string;
+  sms_provider_code: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+};
+
+export type FormattedMessage = {
+  id: string;
+  status: string;
+  data_envio: string;
+  operadora: string;
+  mensagem: string;
+  telefone: string;
+};
+
 const Home: React.FC = () => {
-  const [sendMessageLoading, setSendMessageLoading] = useState(false);
-  const [messageListLoading, setMessageListLoading] = useState(false);
-  const [messages, setMessages] = useState(() => [
-    {
-      situacao: 'OK',
-      codigo: '1',
-      id: '111',
-      data_envio: '01/11/2022 15:32:05',
-      operadora: 'TIM',
-      qtd_credito: '1',
-      descricao: 'ERRO PAG 1',
-      mensagem: 'WAKE_UP',
-      telefone: '5511983798902',
-    },
-    {
-      situacao: 'OK',
-      codigo: '1',
-      id: '2222',
-      data_envio: '07/10/2022 16:37:10',
-      operadora: 'CTBC',
-      qtd_credito: '1',
-      descricao: 'ERRO PAG 1',
-      mensagem: 'alo',
-      telefone: '16995841456',
-    },
-    {
-      situacao: 'OK',
-      codigo: '1',
-      id: '3333',
-      data_envio: '19/09/2022 15:07:44',
-      operadora: 'DATORA',
-      qtd_credito: '1',
-      descricao: 'ERRO PAG 1',
-      mensagem: 'RESET#',
-      telefone: '11913954667',
-    },
-    {
-      situacao: 'OK',
-      codigo: '1',
-      id: '4444',
-      data_envio: '19/09/2022 11:55:51',
-      operadora: 'DATORA',
-      qtd_credito: '1',
-      descricao: 'ERRO PAG 1',
-      mensagem: 'factoryall#',
-      telefone: '5511913954667',
-    },
-    {
-      situacao: 'OK',
-      codigo: '1',
-      id: '5555',
-      data_envio: '19/09/2022 11:54:05',
-      operadora: 'TIM',
-      qtd_credito: '1',
-      descricao: 'RECEBIDA PAG 1',
-      mensagem: 'teste',
-      telefone: '41999013657',
-    },
-    {
-      situacao: 'OK',
-      codigo: '1',
-      id: '6666',
-      data_envio: '01/11/2022 15:32:05',
-      operadora: 'TIM',
-      qtd_credito: '1',
-      descricao: 'ERRO PAG 2',
-      mensagem: 'WAKE_UP',
-      telefone: '5511983798902',
-    },
-    {
-      situacao: 'OK',
-      codigo: '1',
-      id: '7777',
-      data_envio: '07/10/2022 16:37:10',
-      operadora: 'CTBC',
-      qtd_credito: '1',
-      descricao: 'ERRO PAG 2',
-      mensagem: 'alo',
-      telefone: '16995841456',
-    },
-    {
-      situacao: 'OK',
-      codigo: '1',
-      id: '8888',
-      data_envio: '19/09/2022 15:07:44',
-      operadora: 'DATORA',
-      qtd_credito: '1',
-      descricao: 'ERRO PAG 2',
-      mensagem: 'RESET#',
-      telefone: '11913954667',
-    },
-    {
-      situacao: 'OK',
-      codigo: '1',
-      id: '9999',
-      data_envio: '19/09/2022 11:55:51',
-      operadora: 'DATORA',
-      qtd_credito: '1',
-      descricao: 'ERRO PAG 2',
-      mensagem: 'factoryall#',
-      telefone: '5511913954667',
-    },
-    {
-      situacao: 'OK',
-      codigo: '1',
-      id: '10123',
-      data_envio: '19/09/2022 11:54:05',
-      operadora: 'TIM',
-      qtd_credito: '1',
-      descricao: 'RECEBIDA PAG 2',
-      mensagem: 'teste',
-      telefone: '41999013657',
-    },
-    {
-      situacao: 'OK',
-      codigo: '1',
-      id: '11123',
-      data_envio: '19/09/2022 11:54:05',
-      operadora: 'TIM',
-      qtd_credito: '1',
-      descricao: 'RECEBIDA PAG 3',
-      mensagem: 'teste',
-      telefone: '41999013657',
-    },
-  ]);
+  const [messages, setMessages] = useState<FormattedMessage[]>([]);
+  const { user, saveData } = useAuth();
 
-  const defaultMessages = useMemo(() => messages, [messages, messages.length]);
+  const query = useQuery({
+    queryKey: ['getLastMessages'],
+    queryFn: async (): Promise<Message[]> => fetchUserMessagesById(),
+    onSuccess: (data) => {
+      const newData = data.map((item: Message) => ({
+        id: item._id,
+        data_envio: item.createdAt,
+        operadora: item.sms_provider_telecom_service,
+        status: item.sms_provider_status,
+        mensagem: item.content,
+        telefone: item.destination,
+      }));
 
-  function handleRefresh() {
-    setMessageListLoading(true);
+      setMessages(newData);
+    },
+    refetchOnWindowFocus: false,
+    refetchInterval: 5000000,
+  });
 
-    setTimeout(() => {
-      console.log('refreshed!');
-      setMessageListLoading(false);
+  const mutation = useMutation({
+    mutationFn: async (messageData: MessagePanelInputs) => sendMessage(messageData),
+    onError: (error: ErrorProps) => {
       toast({
-        type: 'success',
-        text: 'Mensagens carregadas com sucesso!',
+        type: 'danger',
+        text: `Oops! ${error.message}`,
       });
-    }, 2000);
-  }
-
-  const handleSendMessage: SubmitHandler<MessagePanelInputs> = (data, e) => {
-    setSendMessageLoading(true);
-    console.log(data, e);
-    setTimeout(() => {
-      console.log('sent!');
-      setSendMessageLoading(false);
+    },
+    onSuccess: (_, variables) => {
       setMessages((prev) => [
         {
-          situacao: 'ENVIANDO',
-          codigo: 'AGUARDE',
           id: String(Math.round(Math.random() * 10)),
-          data_envio: '01/11/2022 15:32:05',
+          status: 'ENVIANDO',
+          data_envio: new Date().toISOString(),
           operadora: 'AGUARDE',
-          qtd_credito: '1',
-          descricao: 'ENVIANDO',
-          mensagem: data.content,
-          telefone: data.destination,
+          mensagem: variables.content,
+          telefone: variables.destination,
         },
         ...prev,
       ]);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      saveData({ ...user!, credits: user!.credits >= 1 ? user!.credits - 1 : 0 });
       toast({
         type: 'success',
-        text: 'Mensagem enviada com sucesso!',
+        text: `Mensagem enviada com sucesso!`,
       });
-    }, 2000);
+    },
+  });
+
+  const defaultMessages = useMemo(
+    () =>
+      messages.map((msg) => ({
+        ...msg,
+        data_envio: formatDate(msg.data_envio),
+      })),
+    [messages, messages.length]
+  );
+
+  async function handleRefresh() {
+    await query.refetch();
+  }
+
+  const onSubmit: SubmitHandler<MessagePanelInputs> = async (data) => {
+    const { content, destination } = data;
+    await mutation.mutateAsync({ content, destination });
   };
 
-  const recentMessages = defaultMessages.slice(0, 6).map((item) => ({
-    id: item.id,
-    content: item.mensagem,
-  }));
+  const initialSlice = defaultMessages.length <= 6 ? defaultMessages.length : 6;
+
+  const recentMessages =
+    defaultMessages?.slice(0, initialSlice).map((item) => ({
+      id: item.id,
+      content: item.mensagem,
+    })) || [];
 
   return (
     <S.Wrapper>
       <MessagePanel
-        onSubmit={handleSendMessage}
+        onSubmit={onSubmit}
         recentMessages={recentMessages}
-        loading={sendMessageLoading}
+        loading={mutation.isLoading}
       />
-      <Messagelist
-        messages={defaultMessages}
-        onRefresh={handleRefresh}
-        loading={messageListLoading}
-      />
+      <Messagelist messages={defaultMessages} onRefresh={handleRefresh} loading={query.isLoading} />
     </S.Wrapper>
   );
 };
