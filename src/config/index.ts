@@ -7,6 +7,13 @@ export default {
       url: '/admin',
       active: true,
       admin: true,
+      submenu: [
+        {
+          id: 1,
+          title: 'Clientes',
+          url: '/clients',
+        },
+      ],
     },
     {
       id: 2,

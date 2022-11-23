@@ -45,6 +45,11 @@ export const Logo = styled.div`
   }
 `;
 
+export const RightSection = styled.div`
+  display: flex;
+  gap: 16px;
+`;
+
 export const Avatar = styled.div`
   display: flex;
   align-items: center;
@@ -72,6 +77,25 @@ export const Avatar = styled.div`
     width: 48px;
     height: 48px;
   }
+`;
+
+export const Credits = styled.button`
+  ${({ theme }) => css`
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    border-radius: 4px;
+    background: ${theme.colors.primary.main};
+    font-size: 0.8rem;
+    font-weight: bold;
+    border: none;
+    color: ${theme.colors.font};
+    cursor: pointer;
+    transition: 0.4s ease;
+    :hover {
+      background: ${theme.colors.primary.dark};
+    }
+  `}
 `;
 
 export const Sidebar = styled.div`

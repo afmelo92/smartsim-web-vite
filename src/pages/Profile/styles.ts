@@ -28,19 +28,21 @@ export const Container = styled.form`
     span {
       border-bottom: 1px solid ${theme.colors.gray[200]};
     }
-
-    #submit-button {
-      position: absolute;
-      bottom: 16px;
-      max-width: calc(100% - 32px);
-    }
-
-    @media screen and (max-width: 767px) {
-      min-width: auto;
-      #submit-button {
-        position: static;
-        max-width: 100%;
-      }
-    }
   `}
+`;
+
+export const ButtonsContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: absolute;
+  bottom: 16px;
+  max-width: calc(100% - 32px);
+
+  @media screen and (max-width: 767px) {
+    min-width: auto;
+    position: static;
+    max-width: 100%;
+  }
 `;

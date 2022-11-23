@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Button from '@/components/Button';
 import HookFormInput from '@/components/HookFormInput';
 import toast from '@/components/Toast';
@@ -6,10 +6,12 @@ import { registerSchema } from '@/utils/validationSchemas';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
+import { ErrorProps, registerUser, RegisterUserResponse } from '@/services/mutations';
 
 import * as S from './styles';
 
-type Inputs = {
+export type RegisterInputs = {
   name: string;
   email: string;
   password: string;
@@ -17,13 +19,32 @@ type Inputs = {
 };
 
 const Register: React.FC = () => {
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const mutation = useMutation({
+    mutationFn: async (newUser: RegisterInputs): Promise<RegisterUserResponse> =>
+      registerUser(newUser),
+    onError: (error: ErrorProps) => {
+      toast({
+        type: 'danger',
+        text: `Oops! ${error.message}`,
+      });
+    },
+    onSuccess: () => {
+      toast({
+        type: 'success',
+        text: 'Conta criada com sucesso!',
+      });
+      navigate('/login', {
+        replace: true,
+      });
+    },
+  });
+
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<Inputs>({
+  } = useForm<RegisterInputs>({
     defaultValues: {
       name: '',
       email: '',
@@ -35,19 +56,10 @@ const Register: React.FC = () => {
     reValidateMode: 'onChange',
   });
 
-  const onSubmit: SubmitHandler<Inputs> = (data, e) => {
-    setLoading(true);
-    setTimeout(() => {
-      console.log(data, e);
-      setLoading(false);
-      toast({
-        type: 'success',
-        text: 'Conta criada com sucesso!',
-      });
-      navigate('/login', {
-        replace: true,
-      });
-    }, 2000);
+  const onSubmit: SubmitHandler<RegisterInputs> = async (data) => {
+    const { name, email, password, confirm_password } = data;
+
+    await mutation.mutateAsync({ name, email, password, confirm_password });
   };
   return (
     <S.Wrapper>
@@ -64,7 +76,7 @@ const Register: React.FC = () => {
               control={control}
               errors={errors}
               autoComplete='new-password'
-              loading={loading}
+              loading={mutation.isLoading}
               transform={{
                 input: (value: string) => value,
                 output: (e: React.BaseSyntheticEvent) => String(e.target.value),
@@ -79,7 +91,7 @@ const Register: React.FC = () => {
               control={control}
               errors={errors}
               autoComplete='new-password'
-              loading={loading}
+              loading={mutation.isLoading}
               transform={{
                 input: (value: string) => value,
                 output: (e: React.BaseSyntheticEvent) => String(e.target.value),
@@ -94,7 +106,7 @@ const Register: React.FC = () => {
               control={control}
               errors={errors}
               autoComplete='new-password'
-              loading={loading}
+              loading={mutation.isLoading}
               transform={{
                 input: (value: string) => value,
                 output: (e: React.BaseSyntheticEvent) => String(e.target.value),
@@ -109,13 +121,17 @@ const Register: React.FC = () => {
               control={control}
               errors={errors}
               autoComplete='new-password'
-              loading={loading}
+              loading={mutation.isLoading}
               transform={{
                 input: (value: string) => value,
                 output: (e: React.BaseSyntheticEvent) => String(e.target.value),
               }}
             />
-            <Button error={Object.keys(errors).length > 0} loading={loading} type='submit'>
+            <Button
+              error={Object.keys(errors).length > 0}
+              loading={mutation.isLoading}
+              type='submit'
+            >
               Criar conta
             </Button>
           </S.Fields>

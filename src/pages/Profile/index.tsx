@@ -1,11 +1,21 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Button from '@/components/Button';
 import toast from '@/components/Toast';
 import { updateUserSchema } from '@/utils/validationSchemas';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm, SubmitHandler } from 'react-hook-form';
-
 import HookFormInput from '@/components/HookFormInput';
+import { useNavigate } from 'react-router-dom';
+import avatar from '@/assets/images/avatar.jpeg';
+
+import { useMutation } from '@tanstack/react-query';
+import {
+  editProfile,
+  EditProfileData,
+  EditProfileResponse,
+  ErrorProps,
+} from '@/services/mutations';
+import { useAuth } from '@/hooks/useAuth';
 import * as S from './styles';
 
 type Inputs = {
@@ -16,15 +26,17 @@ type Inputs = {
 };
 
 const Profile: React.FC = () => {
-  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { user, clearData, saveData } = useAuth();
   const {
     control,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<Inputs>({
     defaultValues: {
-      name: 'Andre Melo',
-      email: 'andre.fabian.melo@gmail.com',
+      name: user?.name || '',
+      email: user?.email || '',
       new_password: '',
       confirm_password: '',
     },
@@ -33,21 +45,62 @@ const Profile: React.FC = () => {
     reValidateMode: 'onChange',
   });
 
-  const onSubmit: SubmitHandler<Inputs> = (data, e) => {
-    setLoading(true);
-    setTimeout(() => {
-      console.log(data, e);
-      setLoading(false);
+  const editProfileMutation = useMutation({
+    mutationFn: async (data: EditProfileData): Promise<EditProfileResponse> => editProfile(data),
+    onError: (error: ErrorProps) => {
+      toast({
+        type: 'danger',
+        text: `Oops! ${error.message}`,
+      });
+    },
+    onSuccess: (data) => {
+      const { user: responseUser } = data;
+
+      saveData({
+        id: responseUser._id,
+        name: responseUser.name,
+        email: responseUser.email,
+        admin: responseUser.admin,
+        credits: responseUser.credits,
+        avatar: responseUser.avatar,
+      });
+
+      reset({
+        new_password: '',
+        confirm_password: '',
+        email: responseUser.email,
+        name: responseUser.name,
+      });
+
       toast({
         type: 'success',
-        text: 'Perfil atualizado com sucesso!',
+        text: `Usuário editado com sucesso!`,
       });
-    }, 2000);
+    },
+  });
+
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    const { name, email, new_password, confirm_password } = data;
+
+    if (user) {
+      await editProfileMutation.mutateAsync({
+        name,
+        email,
+        new_password,
+        confirm_password,
+        user_id: user.id,
+      });
+    }
   };
+
+  function handleLogout() {
+    clearData();
+    return navigate('/login');
+  }
   return (
     <S.Wrapper>
       <S.Container onSubmit={handleSubmit(onSubmit)}>
-        <img src='https://i.pravatar.cc/300' alt='user' />
+        <img src={avatar} alt='user' />
         <HookFormInput
           label='Nome'
           name='name'
@@ -57,7 +110,7 @@ const Profile: React.FC = () => {
           control={control}
           errors={errors}
           autoComplete='new-password'
-          loading={loading}
+          loading={editProfileMutation.isLoading}
           transform={{
             input: (value: string) => value,
             output: (e: React.BaseSyntheticEvent) => String(e.target.value),
@@ -72,7 +125,7 @@ const Profile: React.FC = () => {
           control={control}
           errors={errors}
           autoComplete='new-password'
-          loading={loading}
+          loading={editProfileMutation.isLoading}
           transform={{
             input: (value: string) => value,
             output: (e: React.BaseSyntheticEvent) => String(e.target.value),
@@ -88,7 +141,7 @@ const Profile: React.FC = () => {
           control={control}
           errors={errors}
           autoComplete='new-password'
-          loading={loading}
+          loading={editProfileMutation.isLoading}
           transform={{
             input: (value: string) => value,
             output: (e: React.BaseSyntheticEvent) => String(e.target.value),
@@ -103,20 +156,26 @@ const Profile: React.FC = () => {
           control={control}
           errors={errors}
           autoComplete='new-password'
-          loading={loading}
+          loading={editProfileMutation.isLoading}
           transform={{
             input: (value: string) => value,
             output: (e: React.BaseSyntheticEvent) => String(e.target.value),
           }}
         />
-        <Button
-          id='submit-button'
-          error={Object.keys(errors).length > 0}
-          loading={loading}
-          type='submit'
-        >
-          Atualizar perfil{' '}
-        </Button>
+
+        <S.ButtonsContainer>
+          <Button
+            id='submit-button'
+            error={Object.keys(errors).length > 0}
+            loading={editProfileMutation.isLoading}
+            type='submit'
+          >
+            Atualizar perfil{' '}
+          </Button>
+          <Button id='logout-button' type='button' error={true} onClick={handleLogout}>
+            Logout
+          </Button>
+        </S.ButtonsContainer>
       </S.Container>
     </S.Wrapper>
   );
