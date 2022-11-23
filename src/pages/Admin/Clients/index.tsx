@@ -6,11 +6,8 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-
 import SVGWrapper from '@/components/SVGWrapper';
 import FilterInput from './components/FilterInput';
-
-import * as S from './styles';
 import UsersTable from './components/UsersTable';
 import Pagination from './components/Pagination';
 import DeleteModal from './components/DeleteModal';
@@ -18,277 +15,157 @@ import EditModal, { EditModalInputs } from './components/EditModal';
 import { SubmitHandler } from 'react-hook-form';
 import toast from '@/components/Toast';
 
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { fetchAllUsers, FetchAllUsersResponse } from '@/services/queries';
+import {
+  deleteUser,
+  DeleteUserData,
+  editUser,
+  EditUserData,
+  EditUserResponse,
+  ErrorProps,
+} from '@/services/mutations';
+import Spinner from '@/components/Spinner';
+
+import * as S from './styles';
+
 type User = {
   _id: string;
   name: string;
   email: string;
-  credits: string;
+  credits: number;
   sms_refer: string;
   sms_key: string | null;
   createdAt: string;
   updatedAt: string;
   admin: boolean;
   avatar: string | null;
+  __v: number;
+};
+
+type FormattedUser = {
+  id: string;
+  email: string;
+  credits: string;
+  name: string;
 };
 
 type OpenModalProps = {
-  action: 'edit' | 'delete';
+  action: 'edit' | 'delete' | '';
+  isOpen: boolean;
   data: {
-    id: string;
+    user: FormattedUser | null;
   };
 };
 
-const defaultData: User[] = [
-  {
-    _id: '634b814406f98f9159c34e68',
-    name: 'Fernando',
-    email: 'fer@email.com',
-    credits: '20',
-    sms_refer: '0a5d1083-6066-43e8-b204-d7eb4c44c22b',
-    sms_key: 'sms_key',
-    createdAt: '2022-10-16T03:57:56.057Z',
-    updatedAt: '2022-10-18T04:25:19.271Z',
-    admin: false,
-    avatar: null,
-  },
-  {
-    _id: '634d5c2e4a0a95f5a411549e',
-    name: 'Andre',
-    email: 'andre@email.com',
-    credits: '13',
-    sms_refer: '471c5397-074b-4605-b59b-8294cae81f30',
-    sms_key: 'sms_key',
-    createdAt: '2022-10-17T13:44:14.217Z',
-    updatedAt: '2022-10-18T03:40:49.207Z',
-    admin: true,
-    avatar: 'avatar_url',
-  },
-  {
-    _id: '634d5d94398c1c7a6e7d735e',
-    name: 'Ninja',
-    email: 'ninja@email.com',
-    credits: '0',
-    sms_refer: '288fb2d9-8c4d-43fd-99d1-f22565a861f6',
-    sms_key: 'sms_key',
-    createdAt: '2022-10-17T13:50:12.657Z',
-    updatedAt: '2022-10-17T13:50:12.657Z',
-    admin: true,
-    avatar: 'avatar_url',
-  },
-  {
-    _id: '634d5dc78d1f5cd546c0943a',
-    name: 'Jaq',
-    email: 'jaq@email.com',
-    credits: '0',
-    sms_refer: '993bd113-3ff6-4e8b-a093-a0de96186f5a',
-    sms_key: 'sms_key',
-    createdAt: '2022-10-17T13:51:03.115Z',
-    updatedAt: '2022-10-17T13:51:03.115Z',
-    admin: true,
-    avatar: 'avatar_url',
-  },
-  {
-    _id: '634b814406f98f9159c34e68',
-    name: 'Fernando',
-    email: 'fer@email.com',
-    credits: '20',
-    sms_refer: '0a5d1083-6066-43e8-b204-d7eb4c44c22b',
-    sms_key: 'sms_key',
-    createdAt: '2022-10-16T03:57:56.057Z',
-    updatedAt: '2022-10-18T04:25:19.271Z',
-    admin: false,
-    avatar: null,
-  },
-  {
-    _id: '634d5c2e4a0a95f5a411549e',
-    name: 'Andre',
-    email: 'andre@email.com',
-    credits: '13',
-    sms_refer: '471c5397-074b-4605-b59b-8294cae81f30',
-    sms_key: 'sms_key',
-    createdAt: '2022-10-17T13:44:14.217Z',
-    updatedAt: '2022-10-18T03:40:49.207Z',
-    admin: true,
-    avatar: 'avatar_url',
-  },
-  {
-    _id: '634d5d94398c1c7a6e7d735e',
-    name: 'Ninja',
-    email: 'ninja@email.com',
-    credits: '0',
-    sms_refer: '288fb2d9-8c4d-43fd-99d1-f22565a861f6',
-    sms_key: 'sms_key',
-    createdAt: '2022-10-17T13:50:12.657Z',
-    updatedAt: '2022-10-17T13:50:12.657Z',
-    admin: true,
-    avatar: 'avatar_url',
-  },
-  {
-    _id: '634d5dc78d1f5cd546c0943a',
-    name: 'Jaq',
-    email: 'jaq@email.com',
-    credits: '0',
-    sms_refer: '993bd113-3ff6-4e8b-a093-a0de96186f5a',
-    sms_key: 'sms_key',
-    createdAt: '2022-10-17T13:51:03.115Z',
-    updatedAt: '2022-10-17T13:51:03.115Z',
-    admin: true,
-    avatar: 'avatar_url',
-  },
-  {
-    _id: '634b814406f98f9159c34e68',
-    name: 'Fernando',
-    email: 'fer@email.com',
-    credits: '20',
-    sms_refer: '0a5d1083-6066-43e8-b204-d7eb4c44c22b',
-    sms_key: 'sms_key',
-    createdAt: '2022-10-16T03:57:56.057Z',
-    updatedAt: '2022-10-18T04:25:19.271Z',
-    admin: false,
-    avatar: null,
-  },
-  {
-    _id: '634d5c2e4a0a95f5a411549e',
-    name: 'Andre',
-    email: 'andre@email.com',
-    credits: '13',
-    sms_refer: '471c5397-074b-4605-b59b-8294cae81f30',
-    sms_key: 'sms_key',
-    createdAt: '2022-10-17T13:44:14.217Z',
-    updatedAt: '2022-10-18T03:40:49.207Z',
-    admin: true,
-    avatar: 'avatar_url',
-  },
-  {
-    _id: '634d5d94398c1c7a6e7d735e',
-    name: 'Ninja',
-    email: 'ninja@email.com',
-    credits: '0',
-    sms_refer: '288fb2d9-8c4d-43fd-99d1-f22565a861f6',
-    sms_key: 'sms_key',
-    createdAt: '2022-10-17T13:50:12.657Z',
-    updatedAt: '2022-10-17T13:50:12.657Z',
-    admin: true,
-    avatar: 'avatar_url',
-  },
-  {
-    _id: '634d5dc78d1f5cd546c0943a',
-    name: 'Jaq',
-    email: 'jaq@email.com',
-    credits: '0',
-    sms_refer: '993bd113-3ff6-4e8b-a093-a0de96186f5a',
-    sms_key: 'sms_key',
-    createdAt: '2022-10-17T13:51:03.115Z',
-    updatedAt: '2022-10-17T13:51:03.115Z',
-    admin: true,
-    avatar: 'avatar_url',
-  },
-  {
-    _id: '634b814406f98f9159c34e68',
-    name: 'Fernando',
-    email: 'fer@email.com',
-    credits: '20',
-    sms_refer: '0a5d1083-6066-43e8-b204-d7eb4c44c22b',
-    sms_key: 'sms_key',
-    createdAt: '2022-10-16T03:57:56.057Z',
-    updatedAt: '2022-10-18T04:25:19.271Z',
-    admin: false,
-    avatar: null,
-  },
-  {
-    _id: '634d5c2e4a0a95f5a411549e',
-    name: 'Andre',
-    email: 'andre@email.com',
-    credits: '13',
-    sms_refer: '471c5397-074b-4605-b59b-8294cae81f30',
-    sms_key: 'sms_key',
-    createdAt: '2022-10-17T13:44:14.217Z',
-    updatedAt: '2022-10-18T03:40:49.207Z',
-    admin: true,
-    avatar: 'avatar_url',
-  },
-  {
-    _id: '634d5d94398c1c7a6e7d735e',
-    name: 'Ninja',
-    email: 'ninja@email.com',
-    credits: '0',
-    sms_refer: '288fb2d9-8c4d-43fd-99d1-f22565a861f6',
-    sms_key: 'sms_key',
-    createdAt: '2022-10-17T13:50:12.657Z',
-    updatedAt: '2022-10-17T13:50:12.657Z',
-    admin: true,
-    avatar: 'avatar_url',
-  },
-  {
-    _id: '634d5dc78d1f5cd546c0943a',
-    name: 'Jaq',
-    email: 'jaq@email.com',
-    credits: '0',
-    sms_refer: '993bd113-3ff6-4e8b-a093-a0de96186f5a',
-    sms_key: 'sms_key',
-    createdAt: '2022-10-17T13:51:03.115Z',
-    updatedAt: '2022-10-17T13:51:03.115Z',
-    admin: true,
-    avatar: 'avatar_url',
-  },
-];
-
 const Clients: React.FC = () => {
-  const [data] = useState<User[]>(() => [...defaultData]);
-  const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
-  const [editModalIsOpen, setEditModalIsOpen] = useState(false);
-  const [editModalLoading, setEditModalLoading] = useState(false);
-  const [deleteModalLoading, setDeleteModalLoading] = useState(false);
+  const [users, setUsers] = useState<FormattedUser[]>([]);
+  const [opModal, setOpModal] = useState<OpenModalProps>({
+    action: '',
+    isOpen: false,
+    data: { user: null },
+  });
   const [globalFilter, setGlobalFilter] = useState('');
-  const [selectedUser, setSelectedUser] = useState<User | null>();
-  const [columnVisibility, setColumnVisibility] = useState({});
+  // const [columnVisibility, setColumnVisibility] = useState({});
 
-  function handleOpenModal({ action, data }: OpenModalProps) {
-    if (action === 'delete') {
-      setDeleteModalIsOpen(true);
+  const query = useQuery({
+    queryKey: ['getUsers'],
+    queryFn: async (): Promise<FetchAllUsersResponse> => fetchAllUsers(),
+    onSuccess: (data) => {
+      setUsers(
+        data.map((user: User) => ({
+          id: user._id,
+          email: user.email,
+          credits: String(user.credits),
+          name: user.name,
+        }))
+      );
+    },
+    refetchOnWindowFocus: false,
+    refetchInterval: 5000000,
+  });
 
-      setSelectedUser(() => defaultData.find((user) => (user?._id === data?.id ? user : null)));
-    }
-
-    if (action === 'edit') {
-      setEditModalIsOpen(true);
-
-      setSelectedUser(() => defaultData.find((user) => (user?._id === data?.id ? user : null)));
-    }
-  }
-
-  function handleDelete() {
-    setDeleteModalLoading(true);
-    setTimeout(() => {
-      console.log('deleted!!');
-      console.log(selectedUser);
+  const editUserMutation = useMutation({
+    mutationFn: async (data: EditUserData): Promise<EditUserResponse> => editUser(data),
+    onError: (error: ErrorProps) => {
+      toast({
+        type: 'danger',
+        text: `Oops! ${error.message}`,
+      });
+    },
+    onSuccess: (_, variables) => {
+      setUsers((prev) =>
+        prev.map((user: FormattedUser) => {
+          if (user.id === opModal?.data.user?.id) {
+            return {
+              ...user,
+              credits: variables.credits,
+            };
+          }
+          return user;
+        })
+      );
       toast({
         type: 'success',
-        text: 'Usuário excluído com sucesso!',
+        text: `Usuário editado com sucesso!`,
       });
-      setDeleteModalLoading(false);
-      setDeleteModalIsOpen(false);
-      setSelectedUser(null);
-    }, 2000);
-  }
+    },
+    onSettled: () => {
+      setOpModal({
+        action: '',
+        isOpen: false,
+        data: {
+          user: null,
+        },
+      });
+    },
+  });
 
-  const handleEdit: SubmitHandler<EditModalInputs> = (data, e) => {
-    setEditModalLoading(true);
-    console.log(data, e);
-    setTimeout(() => {
-      console.log('edited!');
-      console.log(selectedUser);
+  const deleteUserMutation = useMutation({
+    mutationFn: async (data: DeleteUserData): Promise<unknown> => deleteUser(data),
+    onError: (error: ErrorProps) => {
+      toast({
+        type: 'danger',
+        text: `Oops! ${error.message}`,
+      });
+    },
+    onSuccess: () => {
       toast({
         type: 'success',
-        text: 'Usuário editado com sucesso!',
+        text: `Usuário excluído com sucesso!`,
       });
-      setEditModalLoading(false);
-      setEditModalIsOpen(false);
-      setSelectedUser(null);
-    }, 2000);
+
+      setUsers((prev) => prev.filter((user: FormattedUser) => user.id !== opModal?.data.user?.id));
+    },
+    onSettled: () => {
+      setOpModal({
+        action: '',
+        isOpen: false,
+        data: {
+          user: null,
+        },
+      });
+    },
+  });
+
+  const handleDelete = async () => {
+    await deleteUserMutation.mutateAsync({ user_id: opModal?.data?.user?.id });
   };
 
-  const columns = useMemo<ColumnDef<User, any>[]>(
+  const handleEdit: SubmitHandler<EditModalInputs> = async (data) => {
+    const { sms_key, credits } = data;
+
+    await editUserMutation.mutateAsync({ sms_key, credits, user_id: opModal?.data?.user?.id });
+  };
+
+  function handleCloseModal() {
+    setOpModal((prev) => ({
+      ...prev,
+      isOpen: false,
+    }));
+  }
+
+  const columns = useMemo<ColumnDef<FormattedUser>[]>(
     () => [
       {
         footer: (props) => props.column.id,
@@ -321,10 +198,11 @@ const Clients: React.FC = () => {
             <button
               className='edit-button'
               onClick={() =>
-                handleOpenModal({
+                setOpModal({
                   action: 'edit',
+                  isOpen: true,
                   data: {
-                    id: row.original._id,
+                    user: row.original,
                   },
                 })
               }
@@ -336,10 +214,11 @@ const Clients: React.FC = () => {
             <button
               className='delete-button'
               onClick={() =>
-                handleOpenModal({
+                setOpModal({
                   action: 'delete',
+                  isOpen: true,
                   data: {
-                    id: row.original._id,
+                    user: row.original,
                   },
                 })
               }
@@ -356,23 +235,23 @@ const Clients: React.FC = () => {
   );
 
   const table = useReactTable({
-    data,
+    data: users,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onGlobalFilterChange: setGlobalFilter,
-    debugAll: true,
+    // debugAll: true,
     state: {
       globalFilter,
       // Implementar visibilidade dinamica baseado em viewport
-      columnVisibility,
+      // columnVisibility,
     },
     globalFilterFn: 'includesString',
     enableFilters: true,
     enableColumnFilters: true,
     enableGlobalFilter: true,
-    onColumnVisibilityChange: setColumnVisibility,
+    // onColumnVisibilityChange: setColumnVisibility,
   });
 
   return (
@@ -383,23 +262,33 @@ const Clients: React.FC = () => {
         placeholder='Pesquise por qualquer dado...'
         lefticon='magnifier'
       />
-      <UsersTable table={table} />
-      <Pagination table={table} />
+      {query.isLoading ? <Spinner /> : <UsersTable table={table} />}
+      {!query.isLoading && <Pagination table={table} />}
       <DeleteModal
-        isOpen={deleteModalIsOpen}
-        setIsOpen={setDeleteModalIsOpen}
-        user={selectedUser}
-        handleDelete={handleDelete}
-        setDeleteModalIsOpen={setDeleteModalIsOpen}
-        loading={deleteModalLoading}
+        isOpen={opModal.action === 'delete' && opModal.isOpen}
+        setIsOpen={() =>
+          setOpModal((prev) => ({
+            ...prev,
+            isOpen: false,
+          }))
+        }
+        user={opModal.data.user}
+        onSubmit={handleDelete}
+        onClose={handleCloseModal}
+        loading={deleteUserMutation.isLoading}
       />
       <EditModal
-        isOpen={editModalIsOpen}
-        setIsOpen={setEditModalIsOpen}
-        user={selectedUser}
+        isOpen={opModal.action === 'edit' && opModal.isOpen}
+        setIsOpen={() =>
+          setOpModal((prev) => ({
+            ...prev,
+            isOpen: false,
+          }))
+        }
+        user={opModal.data.user}
         onSubmit={handleEdit}
-        setEditModalIsOpen={setEditModalIsOpen}
-        loading={editModalLoading}
+        onClose={handleCloseModal}
+        loading={editUserMutation.isLoading}
       />
     </S.Wrapper>
   );

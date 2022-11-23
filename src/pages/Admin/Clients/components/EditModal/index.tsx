@@ -20,12 +20,19 @@ type User = {
   avatar: string | null;
 };
 
+type FormattedUser = {
+  id: string;
+  email: string;
+  credits: string;
+  name: string;
+};
+
 type EditModalProps = {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   onSubmit: SubmitHandler<EditModalInputs>;
-  setEditModalIsOpen: (value: boolean) => void;
-  user?: User | null;
+  onClose: () => void;
+  user?: FormattedUser | null;
   loading?: boolean;
 };
 
@@ -38,7 +45,7 @@ const EditModal: React.FC<EditModalProps> = ({
   isOpen,
   setIsOpen,
   onSubmit,
-  setEditModalIsOpen,
+  onClose,
   user,
   loading = false,
 }) => {
@@ -103,7 +110,7 @@ const EditModal: React.FC<EditModalProps> = ({
             <Button loading={loading} type='submit' id='edit'>
               Editar
             </Button>
-            <Button disabled={loading} onClick={() => setEditModalIsOpen(false)} id='cancel'>
+            <Button disabled={loading} onClick={onClose} id='cancel'>
               Cancelar
             </Button>
           </S.ButtonsContainer>

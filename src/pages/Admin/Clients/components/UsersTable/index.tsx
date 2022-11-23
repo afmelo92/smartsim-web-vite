@@ -18,8 +18,15 @@ type User = {
   avatar: string | null;
 };
 
+type FormattedUser = {
+  id: string;
+  email: string;
+  credits: string;
+  name: string;
+};
+
 type TableProps = {
-  table: Table<User>;
+  table: Table<FormattedUser>;
 };
 
 const UsersTable: React.FC<TableProps> = ({ table }) => {
@@ -37,9 +44,6 @@ const UsersTable: React.FC<TableProps> = ({ table }) => {
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
-                  if (window.innerWidth <= 500) {
-                    header.column.getToggleVisibilityHandler();
-                  }
                   return (
                     <th key={header.id}>
                       {header.isPlaceholder

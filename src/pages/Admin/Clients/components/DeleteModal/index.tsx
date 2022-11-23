@@ -3,6 +3,7 @@ import Modal from '@/components/Modal';
 import Button from '@/components/Button';
 
 import * as S from './styles';
+import { SubmitHandler } from 'react-hook-form';
 
 type User = {
   _id: string;
@@ -17,20 +18,27 @@ type User = {
   avatar: string | null;
 };
 
+type FormattedUser = {
+  id: string;
+  email: string;
+  credits: string;
+  name: string;
+};
+
 type ModalProps = {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  handleDelete: () => void;
-  setDeleteModalIsOpen: (value: boolean) => void;
-  user?: User | null;
+  onSubmit: () => void;
+  onClose: () => void;
+  user?: FormattedUser | null;
   loading?: boolean;
 };
 
 const DeleteModal: React.FC<ModalProps> = ({
   isOpen,
   setIsOpen,
-  handleDelete,
-  setDeleteModalIsOpen,
+  onSubmit,
+  onClose,
   user,
   loading = false,
 }) => {
@@ -42,10 +50,10 @@ const DeleteModal: React.FC<ModalProps> = ({
           Tem certeza que deseja excluir o usuário <strong>{user?.name}</strong> ?
         </h2>
         <div>
-          <Button loading={loading} onClick={() => handleDelete()} id='delete'>
+          <Button loading={loading} onClick={onSubmit} id='delete'>
             Excluir
           </Button>
-          <Button disabled={loading} onClick={() => setDeleteModalIsOpen(false)} id='cancel'>
+          <Button disabled={loading} onClick={onClose} id='cancel'>
             Cancelar
           </Button>
         </div>

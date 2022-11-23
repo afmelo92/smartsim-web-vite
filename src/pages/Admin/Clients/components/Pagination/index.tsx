@@ -1,8 +1,8 @@
 import React from 'react';
 import Button from '@/components/Button';
+import { Table } from '@tanstack/react-table';
 
 import * as S from './styles';
-import { Table } from '@tanstack/react-table';
 
 type User = {
   _id: string;
@@ -17,8 +17,15 @@ type User = {
   avatar: string | null;
 };
 
+type FormattedUser = {
+  id: string;
+  email: string;
+  credits: string;
+  name: string;
+};
+
 type PaginationProps = {
-  table: Table<User>;
+  table: Table<any>;
 };
 
 const Pagination: React.FC<PaginationProps> = ({ table }) => {

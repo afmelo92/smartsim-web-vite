@@ -6,6 +6,24 @@ export const Wrapper = styled.div`
     flex-direction: column;
     gap: 8px;
 
+    .spinner {
+      position: relative;
+      width: 150px;
+      height: 150px;
+      top: 250px;
+      left: 50%;
+      transform: translate(-50%, -50%);
+
+      svg {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+
+        stroke: ${theme.colors.primary.lighter};
+      }
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
@@ -27,6 +45,13 @@ export const Wrapper = styled.div`
         padding: 4px;
         text-align: center;
         background: ${theme.colors.gray[500]};
+
+        div {
+          margin: 0 auto;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+        }
 
         button {
           background: none;
